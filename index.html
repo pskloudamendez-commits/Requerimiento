@@ -1,0 +1,1332 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Módulo POS & Pagos Unificado - PSKLOUD</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Zona clara — mostrador (velocidad, papel de recibo) */
+            --paper: #f5f2ea;
+            --paper-card: #ffffff;
+            --paper-line: #e2dbc9;
+            --paper-line-soft: #ece6d6;
+            --ink: #15171c;
+            --ink-soft: #4a4f5a;
+            --ink-mute: #8a8370;
+
+            /* Zona oscura — pasarela de pago (bóveda, seguridad) */
+            --vault: #eef0f5;
+            --vault-panel: #ffffff;
+            --vault-card: #ffffff;
+            --vault-line: #dde1ea;
+            --text-vault: #15171c;
+            --text-vault-mute: #6b7280;
+
+            /* Un único acento para toda acción de confirmación */
+            --accent: #2563eb;
+            --accent-soft: rgba(37, 39, 129, 0.14);
+            --accent-strong: #2563eb;
+
+            /* Reservado sólo para anular / cancelar */
+            --caution: #b0472e;
+            --caution-soft: rgba(176, 71, 46, 0.12);
+
+            --radius-card: 12px;
+            --radius-tight: 8px;
+            --radius-pill: 999px;
+        }
+
+        /* ==================== MODO OSCURO GLOBAL ====================
+           Se activa con [data-theme="dark"] en <html>. Unifica mostrador
+           (paper) y pasarela de pago (vault) bajo una misma paleta oscura. */
+        html[data-theme="dark"] {
+            --paper: #14161c;
+            --paper-card: #1c1f29;
+            --paper-line: #2b2f3b;
+            --paper-line-soft: #242833;
+            --ink: #f2f0e8;
+            --ink-soft: #c7cbd6;
+            --ink-mute: #8a90a3;
+
+            --vault: #171b24;
+            --vault-panel: #1e2330;
+            --vault-card: #262c3c;
+            --vault-line: #363f52;
+            --text-vault: #f2f0e8;
+            --text-vault-mute: #949cb0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Space Grotesk', system-ui, -apple-system, sans-serif;
+            background-color: var(--vault);
+            color: var(--ink);
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .num, .money, table, .total-display-screen, .key, .card-number, .importe-price,
+        .pay-summary-row strong, .summary-row strong {
+            font-family: 'IBM Plex Mono', ui-monospace, SFMono-Regular, monospace;
+            font-variant-numeric: tabular-nums;
+        }
+
+        button, input, select {
+            font-family: inherit;
+        }
+
+        :focus-visible {
+            outline: 2px solid var(--accent);
+            outline-offset: 2px;
+        }
+
+        /* ==================== SISTEMA DE VISTAS (SPA) ==================== */
+        .app-view {
+            display: none;
+            width: 100vw;
+            height: 100vh;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        .app-view.active {
+            display: grid;
+        }
+
+        /* ==================== VISTA 1: POS PRINCIPAL ==================== */
+        #view-pos {
+            grid-template-columns: 248px 1fr;
+            background-color: var(--paper);
+        }
+
+        aside {
+            background-color: var(--ink);
+            display: flex;
+            flex-direction: column;
+            color: var(--paper);
+        }
+
+        .brand-box {
+            padding: 22px 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 1px solid rgba(245, 242, 234, 0.1);
+        }
+
+        .brand-mark {
+            width: 34px;
+            height: 34px;
+            border-radius: var(--radius-tight);
+            background: var(--accent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'IBM Plex Mono', monospace;
+            font-weight: 600;
+            font-size: 0.95rem;
+            flex-shrink: 0;
+        }
+
+        .brand-box h1 {
+            font-size: 1.05rem;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+        }
+
+        .brand-box p {
+            font-size: 0.75rem;
+            color: rgba(245, 242, 234, 0.55);
+            margin-top: 2px;
+        }
+
+        .sys-info {
+            padding: 10px 20px;
+            font-size: 0.78rem;
+            display: flex;
+            justify-content: space-between;
+            color: rgba(245, 242, 234, 0.45);
+            border-bottom: 1px solid rgba(245, 242, 234, 0.08);
+        }
+
+        .menu-list {
+            list-style: none;
+            padding: 10px 0;
+            overflow-y: auto;
+            flex-grow: 1;
+        }
+
+        .menu-list li {
+            padding: 11px 20px;
+            margin: 0 8px;
+            border-radius: var(--radius-tight);
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            transition: background 0.15s, color 0.15s;
+            color: rgba(245, 242, 234, 0.7);
+        }
+
+        .menu-list li:hover {
+            background-color: rgba(245, 242, 234, 0.06);
+            color: var(--paper);
+        }
+
+        .menu-list li.active {
+            background-color: var(--accent-soft);
+            color: #7fd4b3;
+        }
+
+        .pos-main-workspace {
+            display: grid;
+            grid-template-columns: 1fr 330px;
+            grid-template-rows: 62px 1fr 86px;
+            background-color: var(--paper);
+            color: var(--ink);
+            height: 100vh;
+        }
+
+        header.pos-header {
+            grid-column: 1 / -1;
+            background-color: var(--paper-card);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            border-bottom: 1px solid var(--paper-line);
+        }
+
+        .search-bar-top input {
+            width: 320px;
+            padding: 9px 16px;
+            border: 1px solid var(--paper-line);
+            border-radius: var(--radius-pill);
+            outline: none;
+            font-size: 0.9rem;
+            background: var(--paper);
+            color: var(--ink);
+        }
+
+        .search-bar-top input::placeholder {
+            color: var(--ink-mute);
+        }
+
+        .search-bar-top input:focus {
+            border-color: var(--accent);
+            background: var(--paper-card);
+        }
+
+        .top-btns {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            background: var(--paper-card);
+            border: 1px solid var(--paper-line);
+            color: var(--ink-soft);
+            padding: 8px 16px;
+            border-radius: var(--radius-tight);
+            cursor: pointer;
+            font-size: 0.88rem;
+            font-weight: 500;
+        }
+
+        .btn:hover {
+            border-color: var(--ink-mute);
+        }
+
+        .btn-cash {
+            background-color: var(--accent);
+            color: #ffffff;
+            border: none;
+            font-weight: 600;
+        }
+
+        .btn-cash:hover {
+            background-color: var(--accent-strong);
+        }
+
+        .theme-toggle-btn {
+            background: var(--paper-card);
+            border: 1px solid var(--paper-line);
+            color: var(--ink-soft);
+            width: 38px;
+            height: 38px;
+            border-radius: var(--radius-tight);
+            cursor: pointer;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .theme-toggle-btn:hover {
+            border-color: var(--ink-mute);
+        }
+
+        .theme-toggle-btn.on-dark {
+            background: var(--vault-card);
+            border-color: var(--vault-line);
+            color: var(--text-vault-mute);
+        }
+
+        .theme-toggle-btn.on-dark:hover {
+            border-color: var(--text-vault-mute);
+        }
+
+        .content-area {
+            grid-column: 1 / 2;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .table-container {
+            background: var(--paper-card);
+            border: 1px solid var(--paper-line);
+            border-radius: var(--radius-tight);
+            overflow: hidden;
+            flex-grow: 1;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 0.88rem;
+        }
+
+        thead th:first-child, thead th:last-child {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        th {
+            background-color: var(--paper);
+            color: var(--ink-mute);
+            padding: 12px;
+            font-weight: 600;
+            font-size: 0.78rem;
+            font-family: 'Space Grotesk', sans-serif;
+            border-bottom: 1px solid var(--paper-line);
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid var(--paper-line-soft);
+            color: var(--ink);
+        }
+
+        td:nth-child(2) {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        tbody tr:hover td {
+            background-color: #faf8f2;
+        }
+
+        .tag-peso {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 0.72rem;
+            color: var(--accent);
+            display: block;
+            margin-top: 3px;
+        }
+
+        .actions-panel {
+            grid-column: 1 / 2;
+            background: var(--paper-card);
+            border-top: 1px solid var(--paper-line);
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            padding: 0 15px;
+        }
+
+        .action-icon-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: none;
+            border: none;
+            cursor: pointer;
+            gap: 5px;
+            font-size: 0.78rem;
+            color: var(--ink-soft);
+        }
+
+        .action-icon-btn:hover {
+            color: var(--ink);
+        }
+
+        .calc-panel {
+            grid-column: 2 / 3;
+            grid-row: 2 / 4;
+            background: var(--paper-card);
+            border-left: 1px solid var(--paper-line);
+            display: flex;
+            flex-direction: column;
+            padding: 16px;
+            justify-content: space-between;
+        }
+
+        .total-display-screen {
+            background: var(--ink);
+            color: var(--paper);
+            padding: 16px;
+            border-radius: var(--radius-tight);
+            text-align: right;
+            font-size: 1.55rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .keypad {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .key {
+            background: var(--paper);
+            border: 1px solid var(--paper-line);
+            padding: 13px 0;
+            text-align: center;
+            font-size: 1rem;
+            font-weight: 500;
+            border-radius: var(--radius-tight);
+            cursor: pointer;
+            color: var(--ink);
+        }
+
+        .key:hover {
+            border-color: var(--ink-mute);
+        }
+
+        .key.operator {
+            background: var(--accent-soft);
+            color: var(--accent);
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 600;
+        }
+
+        .summary-totals {
+            font-size: 0.88rem;
+            border-top: 1px solid var(--paper-line);
+            padding-top: 10px;
+            color: var(--ink);
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 6px;
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        /* ==================== VISTA 2: PASARELA DE PAGO ==================== */
+        #view-payment {
+            grid-template-columns: 380px 1fr;
+            background-color: var(--vault);
+        }
+
+        .left-column {
+            background-color: var(--vault-panel);
+            border-right: 1px solid var(--vault-line);
+            display: flex;
+            flex-direction: column;
+            padding: 24px;
+            gap: 18px;
+            overflow-y: auto;
+        }
+
+        .brand-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .brand-header .brand-title {
+            flex-grow: 1;
+        }
+
+        .brand-icon {
+            width: 38px;
+            height: 38px;
+            flex-shrink: 0;
+            border-radius: var(--radius-tight);
+            background: var(--accent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'IBM Plex Mono', monospace;
+            font-weight: 600;
+            color: #fff;
+        }
+
+        .brand-title h1 {
+            font-size: 1.15rem;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+            color: var(--text-vault);
+            margin-bottom: 3px;
+        }
+
+        .brand-title p {
+            font-size: 0.82rem;
+            color: var(--text-vault-mute);
+        }
+
+        .card-box {
+            background-color: var(--vault-card);
+            border: 1px solid var(--vault-line);
+            border-radius: var(--radius-card);
+            padding: 18px;
+        }
+
+        .card-box h3 {
+            font-size: 0.92rem;
+            font-weight: 600;
+            margin-bottom: 14px;
+            color: var(--text-vault);
+        }
+
+        .pay-summary-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.88rem;
+            margin-bottom: 11px;
+            color: var(--text-vault-mute);
+        }
+
+        .pay-summary-row.total {
+            font-size: 1.1rem;
+            color: var(--text-vault);
+            font-weight: 600;
+            border-top: 1px solid var(--vault-line);
+            padding-top: 13px;
+            margin-top: 13px;
+        }
+
+        .currency-box select {
+            width: 100%;
+            background: var(--vault);
+            border: 1px solid var(--vault-line);
+            color: var(--text-vault);
+            padding: 10px 12px;
+            border-radius: var(--radius-tight);
+            outline: none;
+            font-size: 0.92rem;
+        }
+
+        .info-alert {
+            background: rgba(30, 115, 85, 0.08);
+            border-left: 3px solid var(--accent);
+            padding: 12px;
+            border-radius: var(--radius-tight);
+            font-size: 0.8rem;
+            color: var(--text-vault-mute);
+            line-height: 1.45;
+        }
+
+        .back-link {
+            background: transparent;
+            color: var(--text-vault-mute);
+            border: 1px solid var(--vault-line);
+        }
+
+        .back-link:hover {
+            color: var(--text-vault);
+            border-color: var(--text-vault-mute);
+        }
+
+        .right-column {
+            padding: 24px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .payment-methods-top {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 10px;
+        }
+
+        .method-tab {
+            background: var(--vault-card);
+            border: 1px solid var(--vault-line);
+            padding: 12px;
+            border-radius: var(--radius-tight);
+            text-align: center;
+            cursor: pointer;
+            font-size: 0.84rem;
+            color: var(--text-vault-mute);
+            transition: background 0.15s, border-color 0.15s, color 0.15s;
+        }
+
+        .method-tab:hover {
+            border-color: var(--text-vault-mute);
+        }
+
+        .method-tab.active {
+            background: var(--accent-soft);
+            border-color: var(--accent);
+            color: var(--text-vault);
+        }
+
+        .importe-banner {
+            background: var(--vault-card);
+            border: 1px solid var(--vault-line);
+            border-radius: var(--radius-card);
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .importe-banner h2 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-vault);
+        }
+
+        .importe-banner p {
+            font-size: 0.82rem;
+            color: var(--text-vault-mute);
+            margin-top: 3px;
+        }
+
+        .importe-price {
+            font-size: 1.7rem;
+            font-weight: 600;
+            color: var(--text-vault);
+        }
+
+        .payment-panel-section {
+            display: none;
+            flex-direction: column;
+            gap: 16px;
+        }
+        .payment-panel-section.active {
+            display: flex;
+        }
+
+        .grid-options {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+        }
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+        .credit-card-item {
+            background: var(--vault-card);
+            border: 1px solid var(--vault-line);
+            border-radius: var(--radius-card);
+            padding: 16px;
+            cursor: pointer;
+        }
+        .credit-card-item:hover {
+            border-color: var(--text-vault-mute);
+        }
+        .credit-card-item.selected {
+            border-color: var(--accent);
+            background: linear-gradient(135deg, var(--vault-card), var(--accent-soft));
+        }
+        .card-top, .card-footer-info {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.74rem;
+            color: var(--text-vault-mute);
+        }
+        .card-number {
+            font-size: 0.92rem;
+            margin: 10px 0;
+            color: var(--text-vault);
+            letter-spacing: 0.03em;
+        }
+
+        /* Insignias de marca — tipografía propia, no logotipos oficiales */
+        .brand-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            font-size: 0.62rem;
+            letter-spacing: 0.03em;
+            line-height: 1;
+        }
+        .brand-visa { background: #1a3f8f; color: #fff; }
+        .brand-mastercard { background: linear-gradient(90deg, #d9491f 50%, #e8a020 50%); color: #1a1200; }
+        .brand-amex { background: #0a6ebd; color: #fff; }
+        .brand-maestro { background: linear-gradient(90deg, #0099df 50%, #eb1c26 50%); color: #fff; }
+        .brand-discover { background: #ff6000; color: #fff; }
+        .brand-diners { background: #1b4a6b; color: #fff; }
+        .brand-paypal { background: #163a7a; color: #fff; }
+        .brand-binance { background: #3a3010; color: #f0c419; }
+        .brand-applepay { background: #f2f0e8; color: #111; }
+        .brand-googlepay { background: #ffffff; color: #1a1f2b; border: 1px solid var(--vault-line); }
+
+        .digital-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .digital-option-btn {
+            background: var(--vault-card);
+            border: 1px solid var(--vault-line);
+            padding: 12px 16px;
+            border-radius: var(--radius-card);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            color: var(--text-vault);
+            font-size: 0.88rem;
+            gap: 10px;
+        }
+        .digital-option-btn .method-label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .digital-option-btn:hover {
+            border-color: var(--text-vault-mute);
+        }
+        .digital-option-btn.active {
+            border-color: var(--accent);
+        }
+        .digital-option-btn.active .check {
+            color: #7fd4b3;
+        }
+        .digital-option-btn .check {
+            color: var(--text-vault-mute);
+            font-family: 'IBM Plex Mono', monospace;
+        }
+
+        .cards-grid-full {
+            grid-template-columns: repeat(3, 1fr);
+        }
+        .digital-options-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+        .wallet-note {
+            color: var(--text-vault-mute);
+            font-size: 0.85rem;
+        }
+
+        /* ==================== TARJETAS DE REGALO ==================== */
+        .gift-cards-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+        .gift-card-item {
+            position: relative;
+            border-radius: var(--radius-card);
+            padding: 16px;
+            cursor: pointer;
+            color: #fff;
+            border: 2px solid transparent;
+            overflow: hidden;
+            min-height: 128px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .gift-card-item:hover {
+            transform: translateY(-2px);
+        }
+        .gift-card-item.selected {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--accent-soft);
+        }
+        .gift-card-item.gift-teal { background: linear-gradient(135deg, #0f9b8e, #0a5c6b); }
+        .gift-card-item.gift-violet { background: linear-gradient(135deg, #7c3aed, #4c1d95); }
+        .gift-card-item.gift-amber { background: linear-gradient(135deg, #f59e0b, #b45309); }
+        .gift-card-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            font-size: 0.72rem;
+            opacity: 0.85;
+        }
+        .gift-card-icon {
+            font-size: 1.3rem;
+        }
+        .gift-card-balance {
+            font-size: 1.25rem;
+            font-weight: 700;
+        }
+        .gift-card-code {
+            font-size: 0.76rem;
+            opacity: 0.8;
+            letter-spacing: 0.04em;
+        }
+        .gift-card-item .check {
+            position: absolute;
+            top: 10px;
+            right: 12px;
+            font-size: 0.95rem;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 14px;
+        }
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .form-group label {
+            font-size: 0.78rem;
+            color: var(--text-vault-mute);
+            font-weight: 500;
+        }
+        .form-group input[type="text"] {
+            background: var(--vault-panel);
+            border: 1px solid var(--vault-line);
+            border-radius: var(--radius-tight);
+            padding: 11px 12px;
+            color: var(--text-vault);
+            font-size: 0.92rem;
+            font-family: 'IBM Plex Mono', ui-monospace, SFMono-Regular, monospace;
+            transition: border-color 0.15s;
+        }
+        .form-group input[type="text"]::placeholder {
+            color: var(--text-vault-mute);
+            opacity: 0.6;
+        }
+        .form-group input[type="text"]:focus {
+            border-color: var(--accent);
+        }
+
+        .btn-action-primary {
+            background-color: var(--accent);
+            color: white;
+            border: none;
+            width: 100%;
+            padding: 16px;
+            border-radius: var(--radius-tight);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-align: center;
+            margin-top: 6px;
+        }
+        .btn-action-primary:hover {
+            background-color: var(--accent-strong);
+        }
+
+        .btn-action-secondary {
+            background-color: transparent;
+            color: var(--text-vault);
+            border: 1px solid var(--accent);
+            width: 100%;
+            padding: 14px;
+            border-radius: var(--radius-tight);
+            font-size: 0.92rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .btn-action-secondary:hover {
+            background-color: var(--accent-soft);
+        }
+
+        .steps-container {
+            background: var(--vault-card);
+            border: 1px solid var(--vault-line);
+            border-radius: var(--radius-card);
+            padding: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .step-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.74rem;
+            color: var(--text-vault-mute);
+        }
+        .step-circle {
+            width: 27px;
+            height: 27px;
+            border-radius: 50%;
+            background: var(--vault);
+            border: 2px solid var(--vault-line);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .step-item.active .step-circle {
+            border-color: var(--accent);
+            color: #7fd4b3;
+        }
+        .step-item.active span {
+            color: var(--text-vault);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ==================== VISTA 1: POS WORKSPACE ==================== -->
+    <div id="view-pos" class="app-view active">
+        <aside>
+            <div class="brand-box">
+                <div class="brand-mark">P</div>
+                <div>
+                    <h1>PSKLOUD</h1>
+                    <p>Terminal de venta</p>
+                </div>
+            </div>
+            <div class="sys-info">
+                <span>Sistema 3.1</span>
+                <span>PIN 39300</span>
+            </div>
+            <div style="padding: 14px 20px; font-size: 0.85rem; color: rgba(245, 242, 234, 0.55);">
+                Hola, <strong style="color: var(--paper);">Premium</strong>
+            </div>
+            <ul class="menu-list">
+                <li class="active">🔍 Buscar en el menú...</li>
+                <li>❌ Anular venta</li>
+                <li>👤 Seleccionar cliente</li>
+                <li onclick="switchView('payment')">💳 Ir a pasarela de pagos</li>
+                <li>📦 Gestión inventario</li>
+                <li onclick="alert('Sesión cerrada')">🚪 Cerrar sesión</li>
+            </ul>
+        </aside>
+
+        <div class="pos-main-workspace">
+            <header class="pos-header">
+                <div class="search-bar-top">
+                    <input type="text" placeholder="Buscar productos o clientes...">
+                </div>
+                <div class="top-btns">
+                    <button class="theme-toggle-btn" id="theme-toggle-pos" onclick="toggleTheme()" title="Cambiar modo claro/oscuro">🌙</button>
+                    <button class="btn">⚙️ Ajustes</button>
+                    <button class="btn btn-cash" onclick="switchView('payment')">💳 Procesar pago</button>
+                </div>
+            </header>
+
+            <section class="content-area">
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Cantidad</th>
+                                <th>Artículo</th>
+                                <th>Unidad</th>
+                                <th>Precio unit.</th>
+                                <th>Descto.</th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>100</td><td>Bolsas de papel kraft (café)</td><td>Unidad</td><td>0.50</td><td>0.00</td><td>50.00</td></tr>
+                            <tr><td>50</td><td>Aceite de oliva virgen extra 1L</td><td>Unidad</td><td>9.00</td><td>0.00</td><td>450.00</td></tr>
+                            <tr><td>2.50</td><td>Café molido premium 1kg</td><td>Kg</td><td>12.00</td><td>0.00</td><td>30.00</td></tr>
+                            <tr><td>0.350</td><td>Queso manchego curado <span class="tag-peso">☑ Peso dinámico</span></td><td>Kg</td><td>35.00</td><td>0.00</td><td>12.25</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section class="actions-panel">
+                <button class="action-icon-btn"><span>✖</span> Anular</button>
+                <button class="action-icon-btn"><span>👤</span> Cliente</button>
+                <button class="action-icon-btn" onclick="switchView('payment')"><span>💳</span> Pagar</button>
+                <button class="action-icon-btn"><span>📦</span> Inventario</button>
+            </section>
+
+            <section class="calc-panel">
+                <div>
+                    <div class="total-display-screen" id="screen">636.95 USD</div>
+                    <div class="keypad">
+                        <div class="key">7</div><div class="key">8</div><div class="key">9</div><div class="key operator">⌫</div>
+                        <div class="key">4</div><div class="key">5</div><div class="key">6</div><div class="key operator">×</div>
+                        <div class="key">1</div><div class="key">2</div><div class="key">3</div><div class="key operator">-</div>
+                        <div class="key operator">✕</div><div class="key">0</div><div class="key">.</div><div class="key operator" onclick="switchView('payment')">✓</div>
+                    </div>
+                </div>
+                <div class="summary-totals">
+                    <div class="summary-row"><span>Efectivo:</span> <strong>636.95 USD</strong></div>
+                    <div class="summary-row"><span>Total:</span> <strong>636.95 USD</strong></div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+
+    <!-- ==================== VISTA 2: MÓDULO DE PAGOS UNIFICADO ==================== -->
+    <div id="view-payment" class="app-view">
+        <aside class="left-column">
+            <div class="brand-header">
+                <div class="brand-icon">P</div>
+                <div class="brand-title">
+                    <h1>PSKLOUD</h1>
+                    <p>Selecciona tu método de pago seguro</p>
+                </div>
+                <button class="theme-toggle-btn on-dark" id="theme-toggle-pay" onclick="toggleTheme()" title="Cambiar modo claro/oscuro">🌙</button>
+            </div>
+
+            <div class="card-box">
+                <h3>Resumen de la orden</h3>
+                <div class="pay-summary-row"><span>Artículo</span><strong>HG03100136...</strong></div>
+                <div class="pay-summary-row"><span>Descuento</span><strong>0.00 USD</strong></div>
+                <div class="pay-summary-row"><span>Impuesto</span><strong>0.22 USD</strong></div>
+                <div class="pay-summary-row total"><span>Total a pagar</span><strong>75.77 USD</strong></div>
+            </div>
+
+            <div class="card-box currency-box">
+                <h3 style="margin-bottom: 10px;">Moneda</h3>
+                <select>
+                    <option value="USD">🇺🇸 USD - Dólar estadounidense</option>
+                </select>
+            </div>
+
+            <button class="btn back-link" onclick="switchView('pos')">← Volver al POS</button>
+        </aside>
+
+        <section class="right-column">
+            <!-- Tabs Superiores de Pagos -->
+            <div class="payment-methods-top">
+                <div class="method-tab active" onclick="switchPayTab('cash')">⚡ Efectivo</div>
+                <div class="method-tab" onclick="switchPayTab('card')">💳 Tarjeta</div>
+                <div class="method-tab" onclick="switchPayTab('digital')">📱 Billeteras</div>
+                <div class="method-tab" onclick="switchPayTab('transfer')">🏦 Transferencia</div>
+                <div class="method-tab" onclick="switchPayTab('gift')">🎁 Tarjeta regalo</div>
+                <div class="method-tab" onclick="switchPayTab('credit')">👤 Crédito</div>
+            </div>
+
+            <div class="importe-banner">
+                <div>
+                    <h2>Importe actual</h2>
+                    <p>Procesamiento seguro cifrado</p>
+                </div>
+                <div class="importe-price">75.77 USD</div>
+            </div>
+
+            <!-- PANEL 1: TARJETA -->
+            <div id="pay-card" class="payment-panel-section">
+                <div class="cards-grid cards-grid-full">
+                    <div class="credit-card-item selected" onclick="selectCard(this)">
+                        <div class="card-top"><span>Banco General</span><span class="brand-badge brand-visa">VISA</span></div>
+                        <div class="card-number">•••• •••• 5678 9910</div>
+                        <div class="card-footer-info"><span>08/30</span><strong>Activa</strong></div>
+                    </div>
+                    <div class="credit-card-item" onclick="selectCard(this)">
+                        <div class="card-top"><span>Global Bank</span><span class="brand-badge brand-mastercard">MC</span></div>
+                        <div class="card-number">•••• •••• 5678 9910</div>
+                        <div class="card-footer-info"><span>09/30</span><strong>Mastercard</strong></div>
+                    </div>
+                    <div class="credit-card-item" onclick="selectCard(this)">
+                        <div class="card-top"><span>Banco Unión</span><span class="brand-badge brand-amex">AMEX</span></div>
+                        <div class="card-number">•••• •••••• 41007</div>
+                        <div class="card-footer-info"><span>03/29</span><strong>American Express</strong></div>
+                    </div>
+                    <div class="credit-card-item" onclick="selectCard(this)">
+                        <div class="card-top"><span>Banco Itaú</span><span class="brand-badge brand-maestro">MAESTRO</span></div>
+                        <div class="card-number">•••• •••• 4471 2093</div>
+                        <div class="card-footer-info"><span>11/28</span><strong>Débito</strong></div>
+                    </div>
+                    <div class="credit-card-item" onclick="selectCard(this)">
+                        <div class="card-top"><span>Banco Andino</span><span class="brand-badge brand-discover">DISCOVER</span></div>
+                        <div class="card-number">•••• •••• 6011 3345</div>
+                        <div class="card-footer-info"><span>05/29</span><strong>Activa</strong></div>
+                    </div>
+                    <div class="credit-card-item" onclick="selectCard(this)">
+                        <div class="card-top"><span>Banco Continental</span><span class="brand-badge brand-diners">DINERS</span></div>
+                        <div class="card-number">•••• •••••• 7724</div>
+                        <div class="card-footer-info"><span>07/30</span><strong>Diners Club</strong></div>
+                    </div>
+                </div>
+                <button class="btn-action-primary" onclick="alert('Pago con tarjeta procesado con éxito')">Pagar 75.77 USD →</button>
+            </div>
+
+            <!-- PANEL NUEVO: BILLETERAS DIGITALES (Binance Pay, PayPal, Apple Pay, G Pay) -->
+            <div id="pay-digital" class="payment-panel-section">
+                <div class="card-box">
+                    <h3>Billeteras digitales</h3>
+                    <p class="wallet-note" style="margin-top: 6px;">Selecciona una billetera conectada o vincula una nueva para pagar.</p>
+                </div>
+                <div class="digital-options digital-options-grid">
+                    <div class="digital-option-btn active" onclick="selectDigitalWallet(this)">
+                        <span class="method-label"><span class="brand-badge brand-paypal">PayPal</span></span>
+                        <span class="check">✓ conectado</span>
+                    </div>
+                    <div class="digital-option-btn" onclick="selectDigitalWallet(this)">
+                        <span class="method-label"><span class="brand-badge brand-binance">Binance Pay</span></span>
+                        <span class="check">Conectar</span>
+                    </div>
+                    <div class="digital-option-btn" onclick="selectDigitalWallet(this)">
+                        <span class="method-label"><span class="brand-badge brand-applepay">Apple Pay</span></span>
+                        <span class="check">Conectar</span>
+                    </div>
+                    <div class="digital-option-btn" onclick="selectDigitalWallet(this)">
+                        <span class="method-label"><span class="brand-badge brand-googlepay">G Pay</span></span>
+                        <span class="check">Conectar</span>
+                    </div>
+                </div>
+                <button class="btn-action-primary" onclick="alert('Pago con billetera digital procesado con éxito')">Pagar 75.77 USD →</button>
+            </div>
+
+            <!-- PANEL 2: EFECTIVO -->
+            <div id="pay-cash" class="payment-panel-section active">
+                <div class="card-box">
+                    <h3>Instrucciones de efectivo</h3>
+                    <p style="color: var(--text-vault-mute); font-size: 0.9rem; margin-bottom: 14px;">Paga la cantidad exacta de 75.77 USD en caja o cajero autorizado.</p>
+                    <button class="btn-action-secondary" onclick="alert('Pago en efectivo registrado')">Aceptar pago en efectivo</button>
+                </div>
+            </div>
+
+            <!-- PANEL NUEVO: TRANSFERENCIA BANCARIA -->
+            <div id="pay-transfer" class="payment-panel-section">
+                <div class="card-box">
+                    <h3>Datos para la transferencia</h3>
+                    <p style="color: var(--text-vault-mute); font-size: 0.9rem; margin: 6px 0 4px;">Realiza la transferencia a la cuenta indicada y registra el comprobante.</p>
+                    <div class="pay-summary-row"><span>Banco destino</span><strong>Banco General</strong></div>
+                    <div class="pay-summary-row"><span>Cuenta</span><strong>04-123-456789-0</strong></div>
+                    <div class="pay-summary-row"><span>Titular</span><strong>PSKLOUD S.A.</strong></div>
+                </div>
+                <div class="card-box">
+                    <h3 style="margin-bottom: 10px; font-size: 0.9rem;">Comprobante de la transferencia</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="transfer-bank">Banco de origen</label>
+                            <input type="text" id="transfer-bank" placeholder="Ej. Banco Unión">
+                        </div>
+                        <div class="form-group">
+                            <label for="transfer-holder">Titular de la cuenta</label>
+                            <input type="text" id="transfer-holder" placeholder="Nombre del titular">
+                        </div>
+                        <div class="form-group">
+                            <label for="transfer-ref">N.º de referencia</label>
+                            <input type="text" id="transfer-ref" placeholder="Ej. 00921874">
+                        </div>
+                        <div class="form-group">
+                            <label for="transfer-date">Fecha de la transferencia</label>
+                            <input type="text" id="transfer-date" placeholder="dd/mm/aaaa">
+                        </div>
+                        <div class="form-group">
+                            <label for="transfer-amount">Monto transferido (USD)</label>
+                            <input type="text" id="transfer-amount" placeholder="75.77">
+                        </div>
+                        <div class="form-group">
+                            <label for="transfer-note">Nota / concepto</label>
+                            <input type="text" id="transfer-note" placeholder="Opcional">
+                        </div>
+                    </div>
+                </div>
+                <button class="btn-action-primary" onclick="submitTransfer()">Registrar transferencia →</button>
+            </div>
+
+            <!-- PANEL 3: TARJETA DE REGALO -->
+            <div id="pay-gift" class="payment-panel-section">
+                <div class="card-box">
+                    <h3>Canjear gift card</h3>
+                    <p style="color: var(--text-vault-mute); font-size: 0.9rem; margin-bottom: 14px;">Selecciona una tarjeta de regalo guardada o aplica un código digital.</p>
+                </div>
+                <div class="gift-cards-grid">
+                    <div class="gift-card-item gift-teal selected" onclick="selectGiftCard(this)">
+                        <div class="gift-card-top"><span class="gift-card-icon">🎁</span><span>PSKLOUD</span></div>
+                        <div>
+                            <div class="gift-card-balance">50.00 USD</div>
+                            <div class="gift-card-code">•••• 8821</div>
+                        </div>
+                        <span class="check">✓</span>
+                    </div>
+                    <div class="gift-card-item gift-violet" onclick="selectGiftCard(this)">
+                        <div class="gift-card-top"><span class="gift-card-icon">🎂</span><span>Cumpleaños</span></div>
+                        <div>
+                            <div class="gift-card-balance">25.00 USD</div>
+                            <div class="gift-card-code">•••• 4407</div>
+                        </div>
+                        <span class="check"></span>
+                    </div>
+                    <div class="gift-card-item gift-amber" onclick="selectGiftCard(this)">
+                        <div class="gift-card-top"><span class="gift-card-icon">⭐</span><span>Bono promo</span></div>
+                        <div>
+                            <div class="gift-card-balance">100.00 USD</div>
+                            <div class="gift-card-code">•••• 1190</div>
+                        </div>
+                        <span class="check"></span>
+                    </div>
+                </div>
+                <div class="card-box">
+                    <h3 style="margin-bottom: 10px; font-size: 0.9rem;">¿Tienes un código digital?</h3>
+                    <div class="form-row" style="grid-template-columns: 1fr;">
+                        <div class="form-group">
+                            <input type="text" id="gift-code" placeholder="Ingresa el código de la gift card">
+                        </div>
+                    </div>
+                </div>
+                <button class="btn-action-secondary" onclick="alert('Gift card aplicada')">Pagar con tarjeta de regalo</button>
+            </div>
+
+            <!-- PANEL 4: CRÉDITO -->
+            <div id="pay-credit" class="payment-panel-section">
+                <div class="steps-container">
+                    <div class="step-item active"><div class="step-circle">✓</div><span>Datos</span></div>
+                    <div class="step-item"><div class="step-circle">◯</div><span>Verificación</span></div>
+                    <div class="step-item"><div class="step-circle">◯</div><span>Aprobación</span></div>
+                </div>
+                <div class="card-box">
+                    <h3>Solicitud de crédito instantánea</h3>
+                    <p style="color: var(--text-vault-mute); font-size: 0.9rem; margin: 6px 0 16px;">Ingresa el monto a financiar y el plazo en días para calcular tu plan de pagos.</p>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="credit-amount">Monto a financiar (USD)</label>
+                            <input type="text" id="credit-amount" placeholder="75.77" oninput="updateCreditPlan()">
+                        </div>
+                        <div class="form-group">
+                            <label for="credit-days">Días de pago</label>
+                            <input type="text" id="credit-days" placeholder="30" oninput="updateCreditPlan()">
+                        </div>
+                    </div>
+                   <!-- <p id="credit-plan-summary" style="color: var(--text-vault-mute); font-size: 0.9rem; margin-top: 14px;">Plan propuesto: 12 cuotas de 6.31 USD</p>-->
+                    <button class="btn-action-secondary" onclick="alert('Solicitud de crédito enviada')">Enviar solicitud y pagar</button>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // Controlador de tema claro/oscuro
+        function applyTheme(theme) {
+            document.documentElement.setAttribute('data-theme', theme);
+            const icon = theme === 'dark' ? '☀️' : '🌙';
+            const posBtn = document.getElementById('theme-toggle-pos');
+            const payBtn = document.getElementById('theme-toggle-pay');
+            if (posBtn) posBtn.textContent = icon;
+            if (payBtn) payBtn.textContent = icon;
+            localStorage.setItem('psk-theme', theme);
+        }
+
+        function toggleTheme() {
+            const current = document.documentElement.getAttribute('data-theme') || 'light';
+            applyTheme(current === 'dark' ? 'light' : 'dark');
+        }
+
+        (function initTheme() {
+            const saved = localStorage.getItem('psk-theme');
+            applyTheme(saved === 'dark' ? 'dark' : 'light');
+        })();
+
+        // Controlador de Vistas SPA
+        function switchView(viewName) {
+            document.querySelectorAll('.app-view').forEach(el => el.classList.remove('active'));
+            if(viewName === 'pos') {
+                document.getElementById('view-pos').classList.add('active');
+            } else if(viewName === 'payment') {
+                document.getElementById('view-payment').classList.add('active');
+            }
+        }
+
+        // Controlador de Pestañas de Pago
+        function switchPayTab(tabId) {
+            document.querySelectorAll('.method-tab').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.payment-panel-section').forEach(el => el.classList.remove('active'));
+
+            event.currentTarget.classList.add('active');
+            document.getElementById('pay-' + tabId).classList.add('active');
+        }
+
+        // Controlador de selección de tarjeta física
+        function selectCard(el) {
+            document.querySelectorAll('#pay-card .credit-card-item').forEach(card => {
+                card.classList.remove('selected');
+            });
+            el.classList.add('selected');
+        }
+
+        // Controlador de selección de billetera digital (Binance Pay, PayPal, Apple Pay, G Pay)
+        function selectDigitalWallet(el) {
+            document.querySelectorAll('#pay-digital .digital-option-btn').forEach(btn => {
+                btn.classList.remove('active');
+                const check = btn.querySelector('.check');
+                if (check.textContent.trim() === '✓ conectado') {
+                    check.textContent = 'Conectar';
+                }
+            });
+            el.classList.add('active');
+            el.querySelector('.check').textContent = '✓ conectado';
+        }
+
+        // Controlador de selección de tarjeta de regalo
+        function selectGiftCard(el) {
+            document.querySelectorAll('#pay-gift .gift-card-item').forEach(card => {
+                card.classList.remove('selected');
+                card.querySelector('.check').textContent = '';
+            });
+            el.classList.add('selected');
+            el.querySelector('.check').textContent = '✓';
+        }
+
+        // Valida y registra los datos ingresados de la transferencia bancaria
+        function submitTransfer() {
+            const bank = document.getElementById('transfer-bank').value.trim();
+            const holder = document.getElementById('transfer-holder').value.trim();
+            const ref = document.getElementById('transfer-ref').value.trim();
+            const date = document.getElementById('transfer-date').value.trim();
+            const amount = document.getElementById('transfer-amount').value.trim();
+
+            if (!bank || !holder || !ref || !date || !amount) {
+                alert('Completa banco de origen, titular, N.º de referencia, fecha y monto para registrar la transferencia.');
+                return;
+            }
+
+            alert(`Transferencia registrada:\nBanco: ${bank}\nTitular: ${holder}\nReferencia: ${ref}\nFecha: ${date}\nMonto: ${amount} USD`);
+        }
+
+        // Recalcula el plan de crédito según el monto y los días de pago ingresados
+        function updateCreditPlan() {
+            const amountInput = document.getElementById('credit-amount');
+            const daysInput = document.getElementById('credit-days');
+            const summary = document.getElementById('credit-plan-summary');
+
+            const amount = parseFloat(amountInput.value.replace(',', '.'));
+            const days = parseInt(daysInput.value, 10);
+
+            if (!amount || amount <= 0 || !days || days <= 0) {
+                summary.textContent = 'Ingresa el monto y los días de pago para ver el plan propuesto.';
+                return;
+            }
+
+            // Cuotas estimadas: una cuota cada 30 días, mínimo 1 cuota
+            const installments = Math.max(1, Math.round(days / 30));
+            const installmentAmount = amount / installments;
+
+            summary.textContent = `Plan propuesto: ${installments} cuota${installments > 1 ? 's' : ''} de ${installmentAmount.toFixed(2)} USD a ${days} días`;
+        }
+    </script>
+</body>
+</html>
