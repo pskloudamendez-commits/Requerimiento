@@ -1389,7 +1389,18 @@
                         <span class="check">Conectar</span>
                     </div>
                 </div>
-                <button class="btn-action-primary" onclick="alert('Pago con billetera digital procesado con éxito')">Pagar 75.77 USD →</button>
+
+                <div class="card-box" id="wallet-account-details">
+                    <h3 id="wallet-account-title">Datos de cuenta — PayPal</h3>
+                    <p style="color: var(--text-vault-mute); font-size: 0.85rem; margin: 6px 0 14px;">Ingresa el identificador de la cuenta con la que se realizará el cargo.</p>
+                    <div class="form-row" style="grid-template-columns: 1fr;">
+                        <div class="form-group">
+                            <label for="wallet-account-id" id="wallet-account-label">ID de cuenta / correo</label>
+                            <input type="text" id="wallet-account-id" placeholder="Ej. cliente@correo.com">
+                        </div>
+                    </div>
+                </div>
+                <button class="btn-action-primary" onclick="submitWalletPayment()">Pagar 75.77 USD →</button>
             </div>
 
             <!-- 3. EFECTIVO -->
@@ -1680,6 +1691,36 @@
             });
             el.classList.add('active');
             el.querySelector('.check').textContent = '✓ conectado';
+
+            // Sincroniza el bloque de datos de cuenta con la billetera seleccionada
+            const walletName = el.querySelector('strong') ? el.querySelector('strong').textContent.trim() : 'billetera';
+            const placeholders = {
+                'PayPal': { label: 'ID de cuenta / correo', placeholder: 'Ej. cliente@correo.com' },
+                'Binance Pay': { label: 'Pay ID / correo Binance', placeholder: 'Ej. 123456789' },
+                'Apple Pay': { label: 'ID de dispositivo / Apple ID', placeholder: 'Ej. cliente@icloud.com' },
+                'Google Pay': { label: 'Cuenta de Google', placeholder: 'Ej. cliente@gmail.com' }
+            };
+            const config = placeholders[walletName] || { label: 'ID de cuenta', placeholder: 'Ingresa el identificador de la cuenta' };
+            const title = document.getElementById('wallet-account-title');
+            const label = document.getElementById('wallet-account-label');
+            const input = document.getElementById('wallet-account-id');
+            if (title) title.textContent = `Datos de cuenta — ${walletName}`;
+            if (label) label.textContent = config.label;
+            if (input) { input.placeholder = config.placeholder; input.value = ''; }
+        }
+
+        // Valida el ID de cuenta antes de confirmar el pago con billetera digital
+        function submitWalletPayment() {
+            const activeWallet = document.querySelector('#pay-digital .digital-option-btn.active strong');
+            const walletName = activeWallet ? activeWallet.textContent.trim() : 'billetera';
+            const accountId = document.getElementById('wallet-account-id').value.trim();
+
+            if (!accountId) {
+                alert(`Ingresa el ID de cuenta de ${walletName} para continuar.`);
+                return;
+            }
+
+            alert(`Pago con ${walletName} procesado con éxito.\nCuenta: ${accountId}`);
         }
 
         function selectGiftCard(el) {
