@@ -1051,13 +1051,102 @@
         .btn-settings-secondary { border:1px solid var(--line); background:transparent; color:var(--ink); padding:12px 20px; border-radius:9px; font-weight:700; cursor:pointer; transition: var(--transition-smooth); }
         .btn-settings-secondary:hover { background: var(--paper-line-soft); }
 
-        @media (max-width: 900px) {
-            .payment-config-grid { grid-template-columns:1fr; }
-            #view-payment-settings { grid-template-columns:1fr; }
-            .settings-sidebar { display:none; }
-            .settings-main { padding:24px; }
+        /* ==================== RESPONSIVE ==================== */
+
+        /* Escritorio pequeño / tablet horizontal */
+        @media (max-width: 1180px) {
+            #view-pos { grid-template-columns: 210px 1fr; }
+            .pos-main-workspace { grid-template-columns: 1fr 290px; }
+            #view-payment { grid-template-columns: 320px 1fr; }
             .payment-methods-top { grid-template-columns: repeat(4, 1fr); }
-            .cards-grid-full, .gift-cards-grid { grid-template-columns: 1fr; }
+        }
+
+        /* Tablet vertical */
+        @media (max-width: 1024px) {
+            #view-pos {
+                grid-template-columns: 1fr;
+                grid-template-rows: auto 1fr;
+            }
+            #view-pos > aside {
+                flex-direction: row;
+                flex-wrap: wrap;
+                align-items: center;
+                padding: 10px 16px;
+                gap: 12px;
+            }
+            #view-pos > aside .brand-box { border-bottom: none; padding: 0; }
+            #view-pos > aside .sys-info,
+            #view-pos > aside > div[style] { display: none; }
+            #view-pos > aside .menu-list {
+                display: flex;
+                flex-direction: row;
+                flex-wrap: wrap;
+                padding: 0;
+                margin-left: auto;
+                flex-grow: 0;
+            }
+            #view-pos > aside .menu-list li { margin: 0; padding: 8px 12px; white-space: nowrap; }
+
+            .pos-main-workspace {
+                grid-template-columns: 1fr;
+                grid-template-rows: auto auto auto auto;
+                height: auto;
+                min-height: calc(100vh - 60px);
+            }
+            header.pos-header { grid-column: 1 / -1; flex-wrap: wrap; height: auto; padding: 12px 16px; gap: 10px; }
+            .search-bar-top input { width: 100%; }
+            .content-area { grid-column: 1 / -1; grid-row: auto; padding: 14px; }
+            .table-container { overflow-x: auto; }
+            .actions-panel { grid-column: 1 / -1; grid-row: auto; padding: 10px 15px; }
+            .calc-panel { grid-column: 1 / -1; grid-row: auto; border-left: none; border-top: 1px solid var(--paper-line); }
+
+            #view-payment { grid-template-columns: 1fr; grid-template-rows: auto 1fr; }
+            .left-column {
+                flex-direction: row;
+                flex-wrap: wrap;
+                align-items: center;
+                border-right: none;
+                border-bottom: 1px solid var(--vault-line);
+                padding: 16px;
+            }
+            .left-column .brand-header { flex: 1 1 220px; }
+            .left-column .card-box { flex: 1 1 220px; }
+            .left-column .back-link { width: auto; margin-left: auto; }
+
+            .payment-methods-top { grid-template-columns: repeat(4, 1fr); }
+            .grid-options { grid-template-columns: 1fr; }
+            .cards-grid, .cards-grid-full, .gift-cards-grid { grid-template-columns: repeat(2, 1fr); }
+
+            #view-payment-settings { grid-template-columns: 1fr; }
+            .settings-sidebar { display: none; }
+            .settings-back-mobile { display: inline-flex !important; }
+            .settings-main { padding: 22px; }
+            .payment-config-grid { grid-template-columns: 1fr; }
+        }
+
+        /* Móvil */
+        @media (max-width: 640px) {
+            #view-pos > aside .brand-box p { display: none; }
+            header.pos-header { padding: 10px 12px; }
+            .top-btns { width: 100%; justify-content: flex-end; flex-wrap: wrap; gap: 8px; }
+            .content-area, .actions-panel, .calc-panel { padding: 12px; }
+            table { font-size: 0.8rem; }
+            th, td { padding: 8px; }
+            .keypad { gap: 6px; }
+            .key { padding: 11px 0; font-size: 0.92rem; }
+            .total-display-screen { font-size: 1.25rem; padding: 12px; }
+
+            .left-column, .right-column { padding: 16px; }
+            .brand-title h1 { font-size: 0.95rem; }
+            .importe-banner { flex-direction: column; align-items: flex-start; gap: 8px; }
+            .payment-methods-top { grid-template-columns: repeat(2, 1fr); }
+            .method-tab { font-size: 0.76rem; padding: 10px 4px; }
+            .cards-grid, .cards-grid-full, .gift-cards-grid, .digital-options-grid { grid-template-columns: 1fr; }
+            .form-row { grid-template-columns: 1fr; }
+
+            .settings-header { flex-direction: column; align-items: flex-start; }
+            .settings-main { padding: 16px; }
+            .payment-config-top { flex-wrap: wrap; }
         }
     </style>
 </head>
@@ -1162,6 +1251,7 @@
             <button class="btn settings-back" onclick="switchView('pos')">← Volver al POS</button>
         </aside>
         <main class="settings-main">
+            <button class="btn settings-back-mobile" onclick="switchView('pos')" style="display:none; margin-bottom: 16px;">← Volver al POS</button>
             <div class="settings-header">
                 <div>
                     <h2>Medios de pago</h2>
