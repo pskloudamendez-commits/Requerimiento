@@ -566,7 +566,7 @@
 
         .payment-methods-top {
             display: grid;
-            grid-template-columns: repeat(6, 1fr);
+            grid-template-columns: repeat(7, 1fr);
             gap: 10px;
         }
 
@@ -739,6 +739,9 @@
             color: var(--text-vault-mute);
             font-size: 0.85rem;
         }
+
+        #pay-other .digital-option-btn { min-height: 62px; }
+        #pay-other .pay-summary-row { margin-bottom: 9px; }
 
         /* ==================== TARJETAS DE REGALO ==================== */
         .gift-cards-grid {
@@ -1025,6 +1028,7 @@
                 <div class="method-tab" onclick="switchPayTab('transfer')">🏦 Transferencia</div>
                 <div class="method-tab" onclick="switchPayTab('gift')">🎁 Tarjeta regalo</div>
                 <div class="method-tab" onclick="switchPayTab('credit')">👤 Crédito</div>
+                <div class="method-tab" onclick="switchPayTab('other')">➕ Otro</div>
             </div>
 
             <div class="importe-banner">
@@ -1192,6 +1196,34 @@
                 <button class="btn-action-secondary" onclick="alert('Gift card aplicada')">Pagar con tarjeta de regalo</button>
             </div>
 
+            <!-- PANEL 5: OTROS MEDIOS DE PAGO -->
+            <div id="pay-other" class="payment-panel-section">
+                <div class="card-box">
+                    <h3>Otros medios de pago</h3>
+                    <p style="color: var(--text-vault-mute); font-size: 0.9rem; margin-top: 6px;">Selecciona una alternativa de pago para mostrar sus datos.</p>
+                </div>
+                <div class="digital-options digital-options-grid">
+                    <div class="digital-option-btn active" onclick="selectOtherPayment(this,'Cashea')"><span class="method-label">🛍️ <strong>Cashea</strong></span><span class="check">✓ seleccionado</span></div>
+                    <div class="digital-option-btn" onclick="selectOtherPayment(this,'Pago móvil')"><span class="method-label">📲 <strong>Pago móvil</strong></span><span class="check">Seleccionar</span></div>
+                    <div class="digital-option-btn" onclick="selectOtherPayment(this,'Zelle')"><span class="method-label">💸 <strong>Zelle</strong></span><span class="check">Seleccionar</span></div>
+                    <div class="digital-option-btn" onclick="selectOtherPayment(this,'Manual')"><span class="method-label">🧾 <strong>Pago manual</strong></span><span class="check">Seleccionar</span></div>
+                </div>
+                <div class="card-box" id="other-payment-details">
+                    <h3>Datos de Cashea</h3>
+                    <div class="pay-summary-row"><span>Monto de compra</span><strong>75.77 USD</strong></div>
+                    <div class="pay-summary-row"><span>Cuota inicial</span><strong>18.94 USD</strong></div>
+                    <div class="pay-summary-row"><span>Saldo financiado</span><strong>56.83 USD</strong></div>
+                    <div class="pay-summary-row"><span>Plan</span><strong>3 cuotas</strong></div>
+                    <div class="pay-summary-row"><span>Cuota estimada</span><strong>18.94 USD</strong></div>
+                    <div class="pay-summary-row"><span>Referencia</span><strong>CAS-00007577</strong></div>
+                    <div class="form-row" style="margin-top: 14px;">
+                        <div class="form-group"><label for="other-customer">Cliente / identificación</label><input type="text" id="other-customer" placeholder="Nombre o documento"></div>
+                        <div class="form-group"><label for="other-phone">Teléfono</label><input type="text" id="other-phone" placeholder="Ej. 0414-1234567"></div>
+                    </div>
+                </div>
+                <button class="btn-action-primary" onclick="submitOtherPayment()">Registrar pago →</button>
+            </div>
+
             <!-- PANEL 4: CRÉDITO -->
             <div id="pay-credit" class="payment-panel-section">
                 <div class="steps-container">
@@ -1258,6 +1290,28 @@
 
             event.currentTarget.classList.add('active');
             document.getElementById('pay-' + tabId).classList.add('active');
+        }
+
+        function selectOtherPayment(el, method) {
+            document.querySelectorAll('#pay-other .digital-option-btn').forEach(btn => {
+                btn.classList.remove('active');
+                btn.querySelector('.check').textContent = 'Seleccionar';
+            });
+            el.classList.add('active');
+            el.querySelector('.check').textContent = '✓ seleccionado';
+            const details = document.getElementById('other-payment-details');
+            const titles = { 'Cashea':'Datos de Cashea', 'Pago móvil':'Datos de Pago móvil', 'Zelle':'Datos de Zelle', 'Manual':'Datos del pago manual' };
+            details.querySelector('h3').textContent = titles[method] || 'Datos del pago';
+        }
+
+        function submitOtherPayment() {
+            const selected = document.querySelector('#pay-other .digital-option-btn.active strong');
+            const method = selected ? selected.textContent : 'Otro medio de pago';
+            if (method === 'Cashea' && !document.getElementById('other-customer').value.trim()) {
+                alert('Ingresa el cliente o identificación para registrar el pago con Cashea.');
+                return;
+            }
+            alert(`Pago registrado mediante ${method}.`);
         }
 
         // Controlador de selección de tarjeta física
