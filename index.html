@@ -897,6 +897,51 @@
         .step-item.active span {
             color: var(--text-vault);
         }
+    
+        /* ==================== CONFIGURACIÓN DE MEDIOS DE PAGO ==================== */
+        #view-payment-settings {
+            grid-template-columns: 248px 1fr;
+            background: var(--paper);
+        }
+        .settings-sidebar {
+            background: var(--ink);
+            color: var(--paper);
+            padding: 22px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .settings-brand { display:flex; align-items:center; gap:10px; padding-bottom:18px; border-bottom:1px solid rgba(245,242,234,.1); }
+        .settings-brand .brand-mark { flex:0 0 auto; }
+        .settings-back { margin-top:auto; width:100%; }
+        .settings-main { padding: 34px 42px; overflow:auto; }
+        .settings-header { display:flex; justify-content:space-between; align-items:flex-start; gap:24px; margin-bottom:26px; }
+        .settings-header h2 { font-size:1.8rem; letter-spacing:-.03em; }
+        .settings-header p { color:var(--text-vault-mute); margin-top:7px; max-width:720px; }
+        .settings-status { display:flex; align-items:center; gap:8px; padding:10px 14px; border:1px solid var(--line); border-radius:999px; font-size:.82rem; white-space:nowrap; background:var(--paper); }
+        .settings-status-dot { width:8px; height:8px; border-radius:50%; background:#31a46c; }
+        .payment-config-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; }
+        .payment-config-card { border:1px solid var(--line); border-radius:14px; padding:18px; background:var(--paper); box-shadow:0 8px 24px rgba(0,0,0,.04); }
+        .payment-config-card.disabled { opacity:.72; }
+        .payment-config-top { display:flex; justify-content:space-between; align-items:flex-start; gap:16px; }
+        .payment-config-title { display:flex; align-items:center; gap:11px; }
+        .payment-config-icon { width:40px; height:40px; border-radius:11px; display:grid; place-items:center; background:var(--ink); color:var(--paper); font-size:1.1rem; }
+        .payment-config-title h3 { font-size:1rem; }
+        .payment-config-title p { color:var(--text-vault-mute); font-size:.78rem; margin-top:3px; }
+        .switch-control { position:relative; width:48px; height:27px; flex:0 0 auto; }
+        .switch-control input { opacity:0; width:0; height:0; position:absolute; }
+        .switch-track { position:absolute; inset:0; border-radius:999px; background:#a7adb8; transition:.2s; cursor:pointer; }
+        .switch-track::after { content:''; position:absolute; width:21px; height:21px; left:3px; top:3px; border-radius:50%; background:#fff; transition:.2s; box-shadow:0 1px 3px rgba(0,0,0,.2); }
+        .switch-control input:checked + .switch-track { background:var(--accent); }
+        .switch-control input:checked + .switch-track::after { transform:translateX(21px); }
+        .config-submethods { margin-top:15px; padding-top:14px; border-top:1px solid var(--line); display:grid; gap:8px; }
+        .config-submethod { display:flex; align-items:center; justify-content:space-between; gap:10px; padding:9px 10px; border-radius:9px; background:rgba(0,0,0,.025); }
+        .config-submethod span { font-size:.84rem; }
+        .settings-footer { margin-top:22px; display:flex; justify-content:flex-end; gap:10px; }
+        .btn-settings-primary { border:0; background:var(--accent); color:#fff; padding:12px 20px; border-radius:9px; font-weight:700; cursor:pointer; }
+        .btn-settings-secondary { border:1px solid var(--line); background:transparent; color:var(--ink); padding:12px 20px; border-radius:9px; font-weight:700; cursor:pointer; }
+        @media (max-width: 900px) { .payment-config-grid { grid-template-columns:1fr; } #view-payment-settings { grid-template-columns:1fr; } .settings-sidebar { display:none; } .settings-main { padding:24px; } }
+
     </style>
 </head>
 <body>
@@ -935,7 +980,7 @@
                 </div>
                 <div class="top-btns">
                     <button class="theme-toggle-btn" id="theme-toggle-pos" onclick="toggleTheme()" title="Cambiar modo claro/oscuro">🌙</button>
-                    <button class="btn">⚙️ Ajustes</button>
+                    <button class="btn" onclick="switchView('payment-settings')">⚙️ Ajustes</button>
                     <button class="btn btn-cash" onclick="switchView('payment')">💳 Procesar pago</button>
                 </div>
             </header>
@@ -988,6 +1033,71 @@
         </div>
     </div>
 
+
+    <!-- ==================== VISTA 2: CONFIGURACIÓN DE MEDIOS DE PAGO ==================== -->
+    <div id="view-payment-settings" class="app-view">
+        <aside class="settings-sidebar">
+            <div class="settings-brand">
+                <div class="brand-mark">P</div>
+                <div><h1>PSKLOUD</h1><p style="font-size:.8rem;opacity:.6;">Configuración</p></div>
+            </div>
+            <div>
+                <p style="font-size:.72rem;text-transform:uppercase;letter-spacing:.12em;opacity:.5;margin-bottom:9px;">Pagos</p>
+                <strong style="font-size:.92rem;">Medios disponibles</strong>
+            </div>
+            <button class="btn settings-back" onclick="switchView('pos')">← Volver al POS</button>
+        </aside>
+        <main class="settings-main">
+            <div class="settings-header">
+                <div>
+                    <h2>Medios de pago</h2>
+                    <p>Controla de forma individual qué métodos y alternativas aparecen en la pantalla de cobro. Los cambios se guardan en este navegador.</p>
+                </div>
+                <div class="settings-status"><span class="settings-status-dot"></span><span id="payment-settings-status">Configuración activa</span></div>
+            </div>
+
+            <div class="payment-config-grid">
+                <div class="payment-config-card" data-config-card="cash">
+                    <div class="payment-config-top"><div class="payment-config-title"><div class="payment-config-icon">⚡</div><div><h3>Efectivo</h3><p>Pago directo en caja</p></div></div><label class="switch-control"><input type="checkbox" data-payment-key="cash" checked onchange="previewPaymentSettings()"><span class="switch-track"></span></label></div>
+                </div>
+                <div class="payment-config-card" data-config-card="card">
+                    <div class="payment-config-top"><div class="payment-config-title"><div class="payment-config-icon">💳</div><div><h3>Tarjeta</h3><p>Crédito, débito y tarjetas guardadas</p></div></div><label class="switch-control"><input type="checkbox" data-payment-key="card" checked onchange="previewPaymentSettings()"><span class="switch-track"></span></label></div>
+                </div>
+                <div class="payment-config-card" data-config-card="digital">
+                    <div class="payment-config-top"><div class="payment-config-title"><div class="payment-config-icon">📱</div><div><h3>Billeteras</h3><p>Alternativas digitales</p></div></div><label class="switch-control"><input type="checkbox" data-payment-key="digital" checked onchange="previewPaymentSettings()"><span class="switch-track"></span></label></div>
+                    <div class="config-submethods">
+                        <div class="config-submethod"><span>PayPal</span><label class="switch-control"><input type="checkbox" data-subpayment-key="paypal" checked onchange="previewPaymentSettings()"><span class="switch-track"></span></label></div>
+                        <div class="config-submethod"><span>Binance Pay</span><label class="switch-control"><input type="checkbox" data-subpayment-key="binance" checked onchange="previewPaymentSettings()"><span class="switch-track"></span></label></div>
+                        <div class="config-submethod"><span>Apple Pay</span><label class="switch-control"><input type="checkbox" data-subpayment-key="applepay" checked onchange="previewPaymentSettings()"><span class="switch-track"></span></label></div>
+                        <div class="config-submethod"><span>G Pay</span><label class="switch-control"><input type="checkbox" data-subpayment-key="googlepay" checked onchange="previewPaymentSettings()"><span class="switch-track"></span></label></div>
+                    </div>
+                </div>
+                <div class="payment-config-card" data-config-card="transfer">
+                    <div class="payment-config-top"><div class="payment-config-title"><div class="payment-config-icon">🏦</div><div><h3>Transferencia</h3><p>Transferencia bancaria y comprobante</p></div></div><label class="switch-control"><input type="checkbox" data-payment-key="transfer" checked onchange="previewPaymentSettings()"><span class="switch-track"></span></label></div>
+                </div>
+                <div class="payment-config-card" data-config-card="gift">
+                    <div class="payment-config-top"><div class="payment-config-title"><div class="payment-config-icon">🎁</div><div><h3>Tarjeta regalo</h3><p>Gift cards y códigos digitales</p></div></div><label class="switch-control"><input type="checkbox" data-payment-key="gift" checked onchange="previewPaymentSettings()"><span class="switch-track"></span></label></div>
+                </div>
+                <div class="payment-config-card" data-config-card="credit">
+                    <div class="payment-config-top"><div class="payment-config-title"><div class="payment-config-icon">👤</div><div><h3>Crédito</h3><p>Financiamiento de la compra</p></div></div><label class="switch-control"><input type="checkbox" data-payment-key="credit" checked onchange="previewPaymentSettings()"><span class="switch-track"></span></label></div>
+                </div>
+                <div class="payment-config-card" data-config-card="other">
+                    <div class="payment-config-top"><div class="payment-config-title"><div class="payment-config-icon">➕</div><div><h3>Otros medios</h3><p>Cashea y alternativas manuales</p></div></div><label class="switch-control"><input type="checkbox" data-payment-key="other" checked onchange="previewPaymentSettings()"><span class="switch-track"></span></label></div>
+                    <div class="config-submethods">
+                        <div class="config-submethod"><span>🛍️ Cashea</span><label class="switch-control"><input type="checkbox" data-subpayment-key="cashea" checked onchange="previewPaymentSettings()"><span class="switch-track"></span></label></div>
+                        <div class="config-submethod"><span>📲 Pago móvil</span><label class="switch-control"><input type="checkbox" data-subpayment-key="pago-movil" checked onchange="previewPaymentSettings()"><span class="switch-track"></span></label></div>
+                        <div class="config-submethod"><span>💬 Zelle</span><label class="switch-control"><input type="checkbox" data-subpayment-key="zelle" checked onchange="previewPaymentSettings()"><span class="switch-track"></span></label></div>
+                        <div class="config-submethod"><span>🧾 Pago manual</span><label class="switch-control"><input type="checkbox" data-subpayment-key="manual" checked onchange="previewPaymentSettings()"><span class="switch-track"></span></label></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="settings-footer">
+                <button class="btn-settings-secondary" onclick="resetPaymentSettings()">Restablecer</button>
+                <button class="btn-settings-primary" onclick="savePaymentSettings()">Guardar configuración</button>
+            </div>
+        </main>
+    </div>
 
     <!-- ==================== VISTA 2: MÓDULO DE PAGOS UNIFICADO ==================== -->
     <div id="view-payment" class="app-view">
@@ -1280,6 +1390,10 @@
                 document.getElementById('view-pos').classList.add('active');
             } else if(viewName === 'payment') {
                 document.getElementById('view-payment').classList.add('active');
+                applyPaymentSettings();
+            } else if(viewName === 'payment-settings') {
+                document.getElementById('view-payment-settings').classList.add('active');
+                loadPaymentSettings();
             }
         }
 
@@ -1381,6 +1495,96 @@
 
             summary.textContent = `Plan propuesto: ${installments} cuota${installments > 1 ? 's' : ''} de ${installmentAmount.toFixed(2)} USD a ${days} días`;
         }
+
+        // ==================== CONFIGURACIÓN INDIVIDUAL DE MEDIOS DE PAGO ====================
+        const PAYMENT_DEFAULTS = {
+            cash:true, card:true, digital:true, transfer:true, gift:true, credit:true, other:true,
+            paypal:true, binance:true, applepay:true, googlepay:true, cashea:true, 'pago-movil':true, zelle:true, manual:true
+        };
+
+        function getPaymentSettings() {
+            try { return { ...PAYMENT_DEFAULTS, ...JSON.parse(localStorage.getItem('psk-payment-settings') || '{}') }; }
+            catch (e) { return { ...PAYMENT_DEFAULTS }; }
+        }
+
+        function loadPaymentSettings() {
+            const settings = getPaymentSettings();
+            document.querySelectorAll('[data-payment-key], [data-subpayment-key]').forEach(input => {
+                const key = input.dataset.paymentKey || input.dataset.subpaymentKey;
+                input.checked = settings[key] !== false;
+            });
+            previewPaymentSettings();
+        }
+
+        function previewPaymentSettings() {
+            document.querySelectorAll('.payment-config-card[data-config-card]').forEach(card => {
+                const key = card.dataset.configCard;
+                const input = card.querySelector('[data-payment-key]');
+                if (input) card.classList.toggle('disabled', !input.checked);
+            });
+        }
+
+        function savePaymentSettings() {
+            const settings = { ...PAYMENT_DEFAULTS };
+            document.querySelectorAll('[data-payment-key], [data-subpayment-key]').forEach(input => {
+                const key = input.dataset.paymentKey || input.dataset.subpaymentKey;
+                settings[key] = input.checked;
+            });
+            const enabledParents = ['cash','card','digital','transfer','gift','credit','other'].filter(k => settings[k]);
+            if (!enabledParents.length) {
+                alert('Debes mantener al menos un medio de pago habilitado.');
+                return;
+            }
+            localStorage.setItem('psk-payment-settings', JSON.stringify(settings));
+            applyPaymentSettings();
+            document.getElementById('payment-settings-status').textContent = 'Configuración guardada';
+            setTimeout(() => { const el=document.getElementById('payment-settings-status'); if(el) el.textContent='Configuración activa'; }, 1800);
+        }
+
+        function resetPaymentSettings() {
+            document.querySelectorAll('[data-payment-key], [data-subpayment-key]').forEach(input => input.checked = true);
+            previewPaymentSettings();
+            savePaymentSettings();
+        }
+
+        function applyPaymentSettings() {
+            const settings = getPaymentSettings();
+            const tabMap = { cash:'cash', card:'card', digital:'digital', transfer:'transfer', gift:'gift', credit:'credit', other:'other' };
+            Object.entries(tabMap).forEach(([key, id]) => {
+                const tab = document.querySelector(`.method-tab[onclick*="'${id}'"]`);
+                const panel = document.getElementById('pay-' + id);
+                const visible = settings[key] !== false;
+                if (tab) tab.style.display = visible ? '' : 'none';
+                if (panel && !visible) panel.classList.remove('active');
+            });
+            const subMap = {
+                paypal:'#pay-digital .digital-option-btn:nth-child(1)', binance:'#pay-digital .digital-option-btn:nth-child(2)',
+                applepay:'#pay-digital .digital-option-btn:nth-child(3)', googlepay:'#pay-digital .digital-option-btn:nth-child(4)',
+                cashea:'#pay-other .digital-option-btn:nth-child(1)', 'pago-movil':'#pay-other .digital-option-btn:nth-child(2)',
+                zelle:'#pay-other .digital-option-btn:nth-child(3)', manual:'#pay-other .digital-option-btn:nth-child(4)'
+            };
+            Object.entries(subMap).forEach(([key, selector]) => {
+                const el = document.querySelector(selector);
+                if (el) el.style.display = settings[key] !== false ? '' : 'none';
+            });
+            ['digital','other'].forEach(parent => {
+                const panel = document.getElementById('pay-' + parent);
+                if (!panel) return;
+                const visibleChildren = [...panel.querySelectorAll('.digital-option-btn')].some(el => getComputedStyle(el).display !== 'none');
+                const tab = document.querySelector(`.method-tab[onclick*="'${parent}'"]`);
+                if (tab && settings[parent] !== false) tab.style.display = visibleChildren ? '' : 'none';
+                if (!visibleChildren) panel.classList.remove('active');
+            });
+            const activeTab = document.querySelector('.method-tab[style=""]:not([style*="display: none"])') || document.querySelector('.method-tab:not([style*="display: none"])');
+            const activePanel = document.querySelector('.payment-panel-section.active');
+            if (!activePanel || activePanel.id === 'pay-digital' && !settings.digital || activePanel.id === 'pay-other' && !settings.other) {
+                const first = document.querySelector('.method-tab:not([style*="display: none"])');
+                if (first) first.click();
+            }
+        }
+
+        loadPaymentSettings();
+
     </script>
 </body>
 </html>
