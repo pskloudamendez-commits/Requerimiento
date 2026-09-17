@@ -1036,6 +1036,32 @@
         .switch-control input:checked + .switch-track { background:var(--accent); }
         .switch-control input:checked + .switch-track::after { transform:translateX(21px); }
         .config-submethods { margin-top:15px; padding-top:14px; border-top:1px solid var(--line); display:grid; gap:12px; }
+        .submethod-details-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border: 1px solid var(--line);
+    background: var(--paper);
+    color: var(--ink-soft);
+    padding: 6px 10px;
+    border-radius: 7px;
+    font-size: .74rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition-smooth);
+}
+.submethod-details-toggle:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: var(--accent-soft);
+}
+.config-submethod-details.is-hidden {
+    display: none;
+}
+.config-submethod-details {
+    display: block;
+}
+
         .config-submethod-item { background: rgba(0,0,0,.02); border: 1px solid var(--line); border-radius: 10px; padding: 12px; display: flex; flex-direction: column; gap: 10px; }
         .config-submethod-header { display:flex; align-items:center; justify-content:space-between; gap:10px; }
         .config-submethod-header span { font-size:.88rem; font-weight: 600; }
@@ -1284,10 +1310,13 @@
                             <div class="config-submethod-header">
                                 <span>💳 Visa (Banco General)</span>
                                 <label class="switch-control"><input type="checkbox" data-subpayment-key="card-visa" checked onchange="previewPaymentSettings()"><span class="switch-track"></span></label>
-                            </div>
-                            <div class="config-credentials-grid" style="margin-top: 5px; padding-top: 10px;">
+                                <button type="button" class="submethod-details-toggle" data-details-key="card-visa" aria-expanded="false" onclick="toggleSubmethodDetails(this)">👁️ Mostrar características</button>
+</div>
+                            <div class="config-submethod-details is-hidden" data-details-for="card-visa">
+<div class="config-credentials-grid" style="margin-top: 5px; padding-top: 10px;">
                                 <div class="form-group"><label>MID / ID Comercio</label><input type="text" data-field="sub-card-visa-id" placeholder="Merchant ID Visa"></div>
-                                <div class="form-group"><label>Banco Receptor</label><input type="text" data-field="sub-card-visa-acc" placeholder="Banco General S.A."></div>
+                                </div>
+<div class="form-group"><label>Banco Receptor</label><input type="text" data-field="sub-card-visa-acc" placeholder="Banco General S.A."></div>
                                 <div class="form-group"><label>Usuario API</label><input type="text" data-field="sub-card-visa-user" placeholder="API User Visa"></div>
                                 <div class="form-group"><label>Secret Key</label><input type="password" data-field="sub-card-visa-pass" placeholder="••••••••"></div>
                             </div>
@@ -1297,10 +1326,13 @@
                             <div class="config-submethod-header">
                                 <span>💳 Mastercard (Global Bank)</span>
                                 <label class="switch-control"><input type="checkbox" data-subpayment-key="card-mc" checked onchange="previewPaymentSettings()"><span class="switch-track"></span></label>
-                            </div>
-                            <div class="config-credentials-grid" style="margin-top: 5px; padding-top: 10px;">
+                                <button type="button" class="submethod-details-toggle" data-details-key="card-mc" aria-expanded="false" onclick="toggleSubmethodDetails(this)">👁️ Mostrar características</button>
+</div>
+                            <div class="config-submethod-details is-hidden" data-details-for="card-mc">
+<div class="config-credentials-grid" style="margin-top: 5px; padding-top: 10px;">
                                 <div class="form-group"><label>MID / ID Comercio</label><input type="text" data-field="sub-card-mc-id" placeholder="Merchant ID MC"></div>
-                                <div class="form-group"><label>Banco Receptor</label><input type="text" data-field="sub-card-mc-acc" placeholder="Global Bank"></div>
+                                </div>
+<div class="form-group"><label>Banco Receptor</label><input type="text" data-field="sub-card-mc-acc" placeholder="Global Bank"></div>
                                 <div class="form-group"><label>Usuario API</label><input type="text" data-field="sub-card-mc-user" placeholder="API User MC"></div>
                                 <div class="form-group"><label>Secret Key</label><input type="password" data-field="sub-card-mc-pass" placeholder="••••••••"></div>
                             </div>
@@ -1310,10 +1342,13 @@
                             <div class="config-submethod-header">
                                 <span>💳 Amex (Banco Unión)</span>
                                 <label class="switch-control"><input type="checkbox" data-subpayment-key="card-amex" checked onchange="previewPaymentSettings()"><span class="switch-track"></span></label>
-                            </div>
-                            <div class="config-credentials-grid" style="margin-top: 5px; padding-top: 10px;">
+                                <button type="button" class="submethod-details-toggle" data-details-key="card-amex" aria-expanded="false" onclick="toggleSubmethodDetails(this)">👁️ Mostrar características</button>
+</div>
+                            <div class="config-submethod-details is-hidden" data-details-for="card-amex">
+<div class="config-credentials-grid" style="margin-top: 5px; padding-top: 10px;">
                                 <div class="form-group"><label>MID / ID Comercio</label><input type="text" data-field="sub-card-amex-id" placeholder="Merchant ID Amex"></div>
-                                <div class="form-group"><label>Banco Receptor</label><input type="text" data-field="sub-card-amex-acc" placeholder="Banco Unión"></div>
+                                </div>
+<div class="form-group"><label>Banco Receptor</label><input type="text" data-field="sub-card-amex-acc" placeholder="Banco Unión"></div>
                                 <div class="form-group"><label>Usuario API</label><input type="text" data-field="sub-card-amex-user" placeholder="API User Amex"></div>
                                 <div class="form-group"><label>Secret Key</label><input type="password" data-field="sub-card-amex-pass" placeholder="••••••••"></div>
                             </div>
@@ -1323,10 +1358,13 @@
                             <div class="config-submethod-header">
                                 <span>💳 Maestro / Débito (Banco Itaú)</span>
                                 <label class="switch-control"><input type="checkbox" data-subpayment-key="card-maestro" checked onchange="previewPaymentSettings()"><span class="switch-track"></span></label>
-                            </div>
-                            <div class="config-credentials-grid" style="margin-top: 5px; padding-top: 10px;">
+                                <button type="button" class="submethod-details-toggle" data-details-key="card-maestro" aria-expanded="false" onclick="toggleSubmethodDetails(this)">👁️ Mostrar características</button>
+</div>
+                            <div class="config-submethod-details is-hidden" data-details-for="card-maestro">
+<div class="config-credentials-grid" style="margin-top: 5px; padding-top: 10px;">
                                 <div class="form-group"><label>MID / ID Comercio</label><input type="text" data-field="sub-card-maestro-id" placeholder="Merchant ID Maestro"></div>
-                                <div class="form-group"><label>Banco Receptor</label><input type="text" data-field="sub-card-maestro-acc" placeholder="Banco Itaú"></div>
+                                </div>
+<div class="form-group"><label>Banco Receptor</label><input type="text" data-field="sub-card-maestro-acc" placeholder="Banco Itaú"></div>
                                 <div class="form-group"><label>Usuario API</label><input type="text" data-field="sub-card-maestro-user" placeholder="API User Maestro"></div>
                                 <div class="form-group"><label>Secret Key</label><input type="password" data-field="sub-card-maestro-pass" placeholder="••••••••"></div>
                             </div>
@@ -1336,10 +1374,13 @@
                             <div class="config-submethod-header">
                                 <span>💳 Discover (Banco Andino)</span>
                                 <label class="switch-control"><input type="checkbox" data-subpayment-key="card-discover" checked onchange="previewPaymentSettings()"><span class="switch-track"></span></label>
-                            </div>
-                            <div class="config-credentials-grid" style="margin-top: 5px; padding-top: 10px;">
+                                <button type="button" class="submethod-details-toggle" data-details-key="card-discover" aria-expanded="false" onclick="toggleSubmethodDetails(this)">👁️ Mostrar características</button>
+</div>
+                            <div class="config-submethod-details is-hidden" data-details-for="card-discover">
+<div class="config-credentials-grid" style="margin-top: 5px; padding-top: 10px;">
                                 <div class="form-group"><label>MID / ID Comercio</label><input type="text" data-field="sub-card-discover-id" placeholder="Merchant ID Discover"></div>
-                                <div class="form-group"><label>Banco Receptor</label><input type="text" data-field="sub-card-discover-acc" placeholder="Banco Andino"></div>
+                                </div>
+<div class="form-group"><label>Banco Receptor</label><input type="text" data-field="sub-card-discover-acc" placeholder="Banco Andino"></div>
                                 <div class="form-group"><label>Usuario API</label><input type="text" data-field="sub-card-discover-user" placeholder="API User Discover"></div>
                                 <div class="form-group"><label>Secret Key</label><input type="password" data-field="sub-card-discover-pass" placeholder="••••••••"></div>
                             </div>
@@ -1349,10 +1390,13 @@
                             <div class="config-submethod-header">
                                 <span>💳 Diners Club (Banco Continental)</span>
                                 <label class="switch-control"><input type="checkbox" data-subpayment-key="card-diners" checked onchange="previewPaymentSettings()"><span class="switch-track"></span></label>
-                            </div>
-                            <div class="config-credentials-grid" style="margin-top: 5px; padding-top: 10px;">
+                                <button type="button" class="submethod-details-toggle" data-details-key="card-diners" aria-expanded="false" onclick="toggleSubmethodDetails(this)">👁️ Mostrar características</button>
+</div>
+                            <div class="config-submethod-details is-hidden" data-details-for="card-diners">
+<div class="config-credentials-grid" style="margin-top: 5px; padding-top: 10px;">
                                 <div class="form-group"><label>MID / ID Comercio</label><input type="text" data-field="sub-card-diners-id" placeholder="Merchant ID Diners"></div>
-                                <div class="form-group"><label>Banco Receptor</label><input type="text" data-field="sub-card-diners-acc" placeholder="Banco Continental"></div>
+                                </div>
+<div class="form-group"><label>Banco Receptor</label><input type="text" data-field="sub-card-diners-acc" placeholder="Banco Continental"></div>
                                 <div class="form-group"><label>Usuario API</label><input type="text" data-field="sub-card-diners-user" placeholder="API User Diners"></div>
                                 <div class="form-group"><label>Secret Key</label><input type="password" data-field="sub-card-diners-pass" placeholder="••••••••"></div>
                             </div>
@@ -1375,10 +1419,13 @@
                             <div class="config-submethod-header">
                                 <span>PayPal</span>
                                 <label class="switch-control"><input type="checkbox" data-subpayment-key="paypal" checked onchange="previewPaymentSettings()"><span class="switch-track"></span></label>
-                            </div>
-                            <div class="config-credentials-grid" style="margin-top: 5px; padding-top: 10px;">
+                                <button type="button" class="submethod-details-toggle" data-details-key="paypal" aria-expanded="false" onclick="toggleSubmethodDetails(this)">👁️ Mostrar características</button>
+</div>
+                            <div class="config-submethod-details is-hidden" data-details-for="paypal">
+<div class="config-credentials-grid" style="margin-top: 5px; padding-top: 10px;">
                                 <div class="form-group"><label>ID de Cuenta</label><input type="text" data-field="sub-paypal-id" placeholder="ID PayPal"></div>
-                                <div class="form-group"><label>Correo de recepción</label><input type="text" data-field="sub-paypal-email" placeholder="paypal@correo.com"></div>
+                                </div>
+<div class="form-group"><label>Correo de recepción</label><input type="text" data-field="sub-paypal-email" placeholder="paypal@correo.com"></div>
                                 <div class="form-group"><label>Clave / Secret</label><input type="password" data-field="sub-paypal-pass" placeholder="••••••••"></div>
                             </div>
                         </div>
@@ -1387,10 +1434,13 @@
                             <div class="config-submethod-header">
                                 <span>Binance Pay</span>
                                 <label class="switch-control"><input type="checkbox" data-subpayment-key="binance" checked onchange="previewPaymentSettings()"><span class="switch-track"></span></label>
-                            </div>
-                            <div class="config-credentials-grid" style="margin-top: 5px; padding-top: 10px;">
+                                <button type="button" class="submethod-details-toggle" data-details-key="binance" aria-expanded="false" onclick="toggleSubmethodDetails(this)">👁️ Mostrar características</button>
+</div>
+                            <div class="config-submethod-details is-hidden" data-details-for="binance">
+<div class="config-credentials-grid" style="margin-top: 5px; padding-top: 10px;">
                                 <div class="form-group"><label>ID de Comercio / Pay ID</label><input type="text" data-field="sub-binance-id" placeholder="Pay ID"></div>
-                                <div class="form-group"><label>Correo / Cuenta</label><input type="text" data-field="sub-binance-email" placeholder="binance@correo.com"></div>
+                                </div>
+<div class="form-group"><label>Correo / Cuenta</label><input type="text" data-field="sub-binance-email" placeholder="binance@correo.com"></div>
                                 <div class="form-group"><label>Clave API</label><input type="password" data-field="sub-binance-pass" placeholder="••••••••"></div>
                             </div>
                         </div>
@@ -1399,10 +1449,13 @@
                             <div class="config-submethod-header">
                                 <span>Apple Pay</span>
                                 <label class="switch-control"><input type="checkbox" data-subpayment-key="applepay" checked onchange="previewPaymentSettings()"><span class="switch-track"></span></label>
-                            </div>
-                            <div class="config-credentials-grid" style="margin-top: 5px; padding-top: 10px;">
+                                <button type="button" class="submethod-details-toggle" data-details-key="applepay" aria-expanded="false" onclick="toggleSubmethodDetails(this)">👁️ Mostrar características</button>
+</div>
+                            <div class="config-submethod-details is-hidden" data-details-for="applepay">
+<div class="config-credentials-grid" style="margin-top: 5px; padding-top: 10px;">
                                 <div class="form-group"><label>ID de Merchant</label><input type="text" data-field="sub-apple-id" placeholder="Merchant ID Apple"></div>
-                                <div class="form-group"><label>Correo Apple ID</label><input type="text" data-field="sub-apple-email" placeholder="icloud@correo.com"></div>
+                                </div>
+<div class="form-group"><label>Correo Apple ID</label><input type="text" data-field="sub-apple-email" placeholder="icloud@correo.com"></div>
                                 <div class="form-group"><label>Clave de Certificado</label><input type="password" data-field="sub-apple-pass" placeholder="••••••••"></div>
                             </div>
                         </div>
@@ -1411,10 +1464,13 @@
                             <div class="config-submethod-header">
                                 <span>G Pay</span>
                                 <label class="switch-control"><input type="checkbox" data-subpayment-key="googlepay" checked onchange="previewPaymentSettings()"><span class="switch-track"></span></label>
-                            </div>
-                            <div class="config-credentials-grid" style="margin-top: 5px; padding-top: 10px;">
+                                <button type="button" class="submethod-details-toggle" data-details-key="googlepay" aria-expanded="false" onclick="toggleSubmethodDetails(this)">👁️ Mostrar características</button>
+</div>
+                            <div class="config-submethod-details is-hidden" data-details-for="googlepay">
+<div class="config-credentials-grid" style="margin-top: 5px; padding-top: 10px;">
                                 <div class="form-group"><label>ID de Comercio Google</label><input type="text" data-field="sub-google-id" placeholder="Merchant ID Google"></div>
-                                <div class="form-group"><label>Correo asociado</label><input type="text" data-field="sub-google-email" placeholder="gmail@correo.com"></div>
+                                </div>
+<div class="form-group"><label>Correo asociado</label><input type="text" data-field="sub-google-email" placeholder="gmail@correo.com"></div>
                                 <div class="form-group"><label>Clave / Token</label><input type="password" data-field="sub-google-pass" placeholder="••••••••"></div>
                             </div>
                         </div>
@@ -1487,10 +1543,13 @@
                             <div class="config-submethod-header">
                                 <span>🛍️ Cashea</span>
                                 <label class="switch-control"><input type="checkbox" data-subpayment-key="cashea" checked onchange="previewPaymentSettings()"><span class="switch-track"></span></label>
-                            </div>
-                            <div class="config-credentials-grid" style="margin-top: 5px; padding-top: 10px;">
+                                <button type="button" class="submethod-details-toggle" data-details-key="cashea" aria-expanded="false" onclick="toggleSubmethodDetails(this)">👁️ Mostrar características</button>
+</div>
+                            <div class="config-submethod-details is-hidden" data-details-for="cashea">
+<div class="config-credentials-grid" style="margin-top: 5px; padding-top: 10px;">
                                 <div class="form-group"><label>ID de Comercio Cashea</label><input type="text" data-field="sub-cashea-id" placeholder="ID Cashea"></div>
-                                <div class="form-group"><label>Correo de afiliación</label><input type="text" data-field="sub-cashea-email" placeholder="cashea@correo.com"></div>
+                                </div>
+<div class="form-group"><label>Correo de afiliación</label><input type="text" data-field="sub-cashea-email" placeholder="cashea@correo.com"></div>
                                 <div class="form-group"><label>Clave API</label><input type="password" data-field="sub-cashea-pass" placeholder="••••••••"></div>
                             </div>
                         </div>
@@ -1499,10 +1558,13 @@
                             <div class="config-submethod-header">
                                 <span>📲 Pago móvil</span>
                                 <label class="switch-control"><input type="checkbox" data-subpayment-key="pago-movil" checked onchange="previewPaymentSettings()"><span class="switch-track"></span></label>
-                            </div>
-                            <div class="config-credentials-grid" style="margin-top: 5px; padding-top: 10px;">
+                                <button type="button" class="submethod-details-toggle" data-details-key="pago-movil" aria-expanded="false" onclick="toggleSubmethodDetails(this)">👁️ Mostrar características</button>
+</div>
+                            <div class="config-submethod-details is-hidden" data-details-for="pago-movil">
+<div class="config-credentials-grid" style="margin-top: 5px; padding-top: 10px;">
                                 <div class="form-group"><label>ID / Cédula / RIF</label><input type="text" data-field="sub-pagomovil-id" placeholder="J-12345678"></div>
-                                <div class="form-group"><label>Correo de notificación</label><input type="text" data-field="sub-pagomovil-email" placeholder="pagomovil@correo.com"></div>
+                                </div>
+<div class="form-group"><label>Correo de notificación</label><input type="text" data-field="sub-pagomovil-email" placeholder="pagomovil@correo.com"></div>
                                 <div class="form-group"><label>Clave de operaciones</label><input type="password" data-field="sub-pagomovil-pass" placeholder="••••••••"></div>
                             </div>
                         </div>
@@ -1511,10 +1573,13 @@
                             <div class="config-submethod-header">
                                 <span>💬 Zelle</span>
                                 <label class="switch-control"><input type="checkbox" data-subpayment-key="zelle" checked onchange="previewPaymentSettings()"><span class="switch-track"></span></label>
-                            </div>
-                            <div class="config-credentials-grid" style="margin-top: 5px; padding-top: 10px;">
+                                <button type="button" class="submethod-details-toggle" data-details-key="zelle" aria-expanded="false" onclick="toggleSubmethodDetails(this)">👁️ Mostrar características</button>
+</div>
+                            <div class="config-submethod-details is-hidden" data-details-for="zelle">
+<div class="config-credentials-grid" style="margin-top: 5px; padding-top: 10px;">
                                 <div class="form-group"><label>ID / Teléfono Zelle</label><input type="text" data-field="sub-zelle-id" placeholder="+1 (555) 000-0000"></div>
-                                <div class="form-group"><label>Correo Zelle</label><input type="text" data-field="sub-zelle-email" placeholder="zelle@empresa.com"></div>
+                                </div>
+<div class="form-group"><label>Correo Zelle</label><input type="text" data-field="sub-zelle-email" placeholder="zelle@empresa.com"></div>
                                 <div class="form-group"><label>Clave de banca Zelle</label><input type="password" data-field="sub-zelle-pass" placeholder="••••••••"></div>
                             </div>
                         </div>
@@ -1523,10 +1588,13 @@
                             <div class="config-submethod-header">
                                 <span>🧾 Pago manual</span>
                                 <label class="switch-control"><input type="checkbox" data-subpayment-key="manual" checked onchange="previewPaymentSettings()"><span class="switch-track"></span></label>
-                            </div>
-                            <div class="config-credentials-grid" style="margin-top: 5px; padding-top: 10px;">
+                                <button type="button" class="submethod-details-toggle" data-details-key="manual" aria-expanded="false" onclick="toggleSubmethodDetails(this)">👁️ Mostrar características</button>
+</div>
+                            <div class="config-submethod-details is-hidden" data-details-for="manual">
+<div class="config-credentials-grid" style="margin-top: 5px; padding-top: 10px;">
                                 <div class="form-group"><label>ID de Terminal Manual</label><input type="text" data-field="sub-manual-id" placeholder="ID Manual"></div>
-                                <div class="form-group"><label>Correo administrativo</label><input type="text" data-field="sub-manual-email" placeholder="admin@correo.com"></div>
+                                </div>
+<div class="form-group"><label>Correo administrativo</label><input type="text" data-field="sub-manual-email" placeholder="admin@correo.com"></div>
                                 <div class="form-group"><label>Contraseña cajero</label><input type="password" data-field="sub-manual-pass" placeholder="••••••••"></div>
                             </div>
                         </div>
@@ -2119,7 +2187,29 @@
             previewPaymentSettings();
         }
 
-        function previewPaymentSettings() {
+        function toggleSubmethodDetails(button) {
+    const key = button.dataset.detailsKey;
+    const details = document.querySelector(`[data-details-for="${key}"]`);
+    if (!details) return;
+
+    const hidden = details.classList.toggle('is-hidden');
+    button.setAttribute('aria-expanded', String(!hidden));
+    button.innerHTML = hidden
+        ? '👁️ Mostrar características'
+        : '🙈 Ocultar características';
+}
+
+function initializeSubmethodDetails() {
+    document.querySelectorAll('.config-submethod-details').forEach(details => {
+        details.classList.add('is-hidden');
+    });
+    document.querySelectorAll('.submethod-details-toggle').forEach(button => {
+        button.setAttribute('aria-expanded', 'false');
+        button.innerHTML = '👁️ Mostrar características';
+    });
+}
+
+function previewPaymentSettings() {
             document.querySelectorAll('.payment-config-card[data-config-card]').forEach(card => {
                 const key = card.dataset.configCard;
                 const input = card.querySelector('[data-payment-key]');
@@ -2224,5 +2314,8 @@
 
         loadPaymentSettings();
     </script>
+<script>
+document.addEventListener('DOMContentLoaded', initializeSubmethodDetails);
+</script>
 </body>
 </html>
