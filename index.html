@@ -1248,7 +1248,7 @@
             <div class="settings-header">
                 <div>
                     <h2>Medios de pago y Credenciales</h2>
-                    <p>Configura los parámetros específicos de cada medio de pago e individualiza ID, Clave y Correo para cada submedio.</p>
+                    <p>Configura los parámetros específicos de cada medio de pago, incluyendo credenciales independientes para cada tarjeta y submedio.</p>
                 </div>
                 <div class="settings-status"><span class="settings-status-dot"></span><span id="payment-settings-status">Configuración activa</span></div>
             </div>
@@ -1269,20 +1269,94 @@
                     </div>
                 </div>
 
-                <!-- TARJETA -->
+                <!-- TARJETA (CONFIGURACIÓN INDIVIDUALIZADA POR TARJETA) -->
                 <div class="payment-config-card" data-config-card="card">
                     <div class="payment-config-top">
                         <div class="payment-config-title">
                             <div class="payment-config-icon">💳</div>
-                            <div><h3>Tarjeta</h3><p>Pasarela de tarjetas de crédito y débito</p></div>
+                            <div><h3>Tarjetas (Crédito y Débito)</h3><p>Pasarela de tarjetas y configuración por emisor</p></div>
                         </div>
                         <label class="switch-control"><input type="checkbox" data-payment-key="card" checked onchange="previewPaymentSettings()"><span class="switch-track"></span></label>
                     </div>
-                    <div class="config-credentials-grid">
-                        <div class="form-group"><label>ID de Comercio (MID)</label><input type="text" data-field="card-wallet-id" placeholder="Merchant ID"></div>
-                        <div class="form-group"><label>Cuenta de recepción / Banco</label><input type="text" data-field="card-account" placeholder="Banco adquiriente"></div>
-                        <div class="form-group"><label>Usuario API</label><input type="text" data-field="card-user" placeholder="API User"></div>
-                        <div class="form-group"><label>Contraseña / Secret Key</label><input type="password" data-field="card-pass" placeholder="••••••••"></div>
+                    <div class="config-submethods">
+                        <!-- Visa - Banco General -->
+                        <div class="config-submethod-item">
+                            <div class="config-submethod-header">
+                                <span>💳 Visa (Banco General)</span>
+                                <label class="switch-control"><input type="checkbox" data-subpayment-key="card-visa" checked onchange="previewPaymentSettings()"><span class="switch-track"></span></label>
+                            </div>
+                            <div class="config-credentials-grid" style="margin-top: 5px; padding-top: 10px;">
+                                <div class="form-group"><label>MID / ID Comercio</label><input type="text" data-field="sub-card-visa-id" placeholder="Merchant ID Visa"></div>
+                                <div class="form-group"><label>Banco Receptor</label><input type="text" data-field="sub-card-visa-acc" placeholder="Banco General S.A."></div>
+                                <div class="form-group"><label>Usuario API</label><input type="text" data-field="sub-card-visa-user" placeholder="API User Visa"></div>
+                                <div class="form-group"><label>Secret Key</label><input type="password" data-field="sub-card-visa-pass" placeholder="••••••••"></div>
+                            </div>
+                        </div>
+                        <!-- Mastercard - Global Bank -->
+                        <div class="config-submethod-item">
+                            <div class="config-submethod-header">
+                                <span>💳 Mastercard (Global Bank)</span>
+                                <label class="switch-control"><input type="checkbox" data-subpayment-key="card-mc" checked onchange="previewPaymentSettings()"><span class="switch-track"></span></label>
+                            </div>
+                            <div class="config-credentials-grid" style="margin-top: 5px; padding-top: 10px;">
+                                <div class="form-group"><label>MID / ID Comercio</label><input type="text" data-field="sub-card-mc-id" placeholder="Merchant ID MC"></div>
+                                <div class="form-group"><label>Banco Receptor</label><input type="text" data-field="sub-card-mc-acc" placeholder="Global Bank"></div>
+                                <div class="form-group"><label>Usuario API</label><input type="text" data-field="sub-card-mc-user" placeholder="API User MC"></div>
+                                <div class="form-group"><label>Secret Key</label><input type="password" data-field="sub-card-mc-pass" placeholder="••••••••"></div>
+                            </div>
+                        </div>
+                        <!-- Amex - Banco Unión -->
+                        <div class="config-submethod-item">
+                            <div class="config-submethod-header">
+                                <span>💳 Amex (Banco Unión)</span>
+                                <label class="switch-control"><input type="checkbox" data-subpayment-key="card-amex" checked onchange="previewPaymentSettings()"><span class="switch-track"></span></label>
+                            </div>
+                            <div class="config-credentials-grid" style="margin-top: 5px; padding-top: 10px;">
+                                <div class="form-group"><label>MID / ID Comercio</label><input type="text" data-field="sub-card-amex-id" placeholder="Merchant ID Amex"></div>
+                                <div class="form-group"><label>Banco Receptor</label><input type="text" data-field="sub-card-amex-acc" placeholder="Banco Unión"></div>
+                                <div class="form-group"><label>Usuario API</label><input type="text" data-field="sub-card-amex-user" placeholder="API User Amex"></div>
+                                <div class="form-group"><label>Secret Key</label><input type="password" data-field="sub-card-amex-pass" placeholder="••••••••"></div>
+                            </div>
+                        </div>
+                        <!-- Maestro - Banco Itaú -->
+                        <div class="config-submethod-item">
+                            <div class="config-submethod-header">
+                                <span>💳 Maestro / Débito (Banco Itaú)</span>
+                                <label class="switch-control"><input type="checkbox" data-subpayment-key="card-maestro" checked onchange="previewPaymentSettings()"><span class="switch-track"></span></label>
+                            </div>
+                            <div class="config-credentials-grid" style="margin-top: 5px; padding-top: 10px;">
+                                <div class="form-group"><label>MID / ID Comercio</label><input type="text" data-field="sub-card-maestro-id" placeholder="Merchant ID Maestro"></div>
+                                <div class="form-group"><label>Banco Receptor</label><input type="text" data-field="sub-card-maestro-acc" placeholder="Banco Itaú"></div>
+                                <div class="form-group"><label>Usuario API</label><input type="text" data-field="sub-card-maestro-user" placeholder="API User Maestro"></div>
+                                <div class="form-group"><label>Secret Key</label><input type="password" data-field="sub-card-maestro-pass" placeholder="••••••••"></div>
+                            </div>
+                        </div>
+                        <!-- Discover - Banco Andino -->
+                        <div class="config-submethod-item">
+                            <div class="config-submethod-header">
+                                <span>💳 Discover (Banco Andino)</span>
+                                <label class="switch-control"><input type="checkbox" data-subpayment-key="card-discover" checked onchange="previewPaymentSettings()"><span class="switch-track"></span></label>
+                            </div>
+                            <div class="config-credentials-grid" style="margin-top: 5px; padding-top: 10px;">
+                                <div class="form-group"><label>MID / ID Comercio</label><input type="text" data-field="sub-card-discover-id" placeholder="Merchant ID Discover"></div>
+                                <div class="form-group"><label>Banco Receptor</label><input type="text" data-field="sub-card-discover-acc" placeholder="Banco Andino"></div>
+                                <div class="form-group"><label>Usuario API</label><input type="text" data-field="sub-card-discover-user" placeholder="API User Discover"></div>
+                                <div class="form-group"><label>Secret Key</label><input type="password" data-field="sub-card-discover-pass" placeholder="••••••••"></div>
+                            </div>
+                        </div>
+                        <!-- Diners - Banco Continental -->
+                        <div class="config-submethod-item">
+                            <div class="config-submethod-header">
+                                <span>💳 Diners Club (Banco Continental)</span>
+                                <label class="switch-control"><input type="checkbox" data-subpayment-key="card-diners" checked onchange="previewPaymentSettings()"><span class="switch-track"></span></label>
+                            </div>
+                            <div class="config-credentials-grid" style="margin-top: 5px; padding-top: 10px;">
+                                <div class="form-group"><label>MID / ID Comercio</label><input type="text" data-field="sub-card-diners-id" placeholder="Merchant ID Diners"></div>
+                                <div class="form-group"><label>Banco Receptor</label><input type="text" data-field="sub-card-diners-acc" placeholder="Banco Continental"></div>
+                                <div class="form-group"><label>Usuario API</label><input type="text" data-field="sub-card-diners-user" placeholder="API User Diners"></div>
+                                <div class="form-group"><label>Secret Key</label><input type="password" data-field="sub-card-diners-pass" placeholder="••••••••"></div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -1518,7 +1592,7 @@
             <!-- 1. TARJETAS -->
             <div id="pay-card" class="payment-panel-section">
                 <div class="cards-grid cards-grid-full">
-                    <div class="credit-card-item selected" style="background-image: url('https://images.unsplash.com/photo-1508739773434-c26b3d09e071?w=600&auto=format&fit=crop&q=80');" onclick="selectCard(this)">
+                    <div class="credit-card-item selected" data-card-key="card-visa" style="background-image: url('https://images.unsplash.com/photo-1508739773434-c26b3d09e071?w=600&auto=format&fit=crop&q=80');" onclick="selectCard(this)">
                         <div class="card-top"><span>Banco General</span><span class="brand-badge brand-visa">VISA</span></div>
                         <div class="card-middle">
                             <div class="card-chip"></div>
@@ -1530,7 +1604,7 @@
                         <div class="card-footer-info"><span>08/30</span><strong>Activa</strong></div>
                     </div>
 
-                    <div class="credit-card-item" style="background-image: url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=600&auto=format&fit=crop&q=80');" onclick="selectCard(this)">
+                    <div class="credit-card-item" data-card-key="card-mc" style="background-image: url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=600&auto=format&fit=crop&q=80');" onclick="selectCard(this)">
                         <div class="card-top"><span>Global Bank</span><span class="brand-badge brand-mastercard">MC</span></div>
                         <div class="card-middle">
                             <div class="card-chip"></div>
@@ -1542,7 +1616,7 @@
                         <div class="card-footer-info"><span>09/30</span><strong>Mastercard</strong></div>
                     </div>
 
-                    <div class="credit-card-item" style="background-image: url('https://images.unsplash.com/photo-1579546929518-9e396f3cc809?w=600&auto=format&fit=crop&q=80');" onclick="selectCard(this)">
+                    <div class="credit-card-item" data-card-key="card-amex" style="background-image: url('https://images.unsplash.com/photo-1579546929518-9e396f3cc809?w=600&auto=format&fit=crop&q=80');" onclick="selectCard(this)">
                         <div class="card-top"><span>Banco Unión</span><span class="brand-badge brand-amex">AMEX</span></div>
                         <div class="card-middle">
                             <div class="card-chip"></div>
@@ -1554,7 +1628,7 @@
                         <div class="card-footer-info"><span>03/29</span><strong>Amex</strong></div>
                     </div>
 
-                    <div class="credit-card-item" style="background-image: url('https://images.unsplash.com/photo-1557683316-973673baf926?w=600&auto=format&fit=crop&q=80');" onclick="selectCard(this)">
+                    <div class="credit-card-item" data-card-key="card-maestro" style="background-image: url('https://images.unsplash.com/photo-1557683316-973673baf926?w=600&auto=format&fit=crop&q=80');" onclick="selectCard(this)">
                         <div class="card-top"><span>Banco Itaú</span><span class="brand-badge brand-maestro">MAESTRO</span></div>
                         <div class="card-middle">
                             <div class="card-chip"></div>
@@ -1566,7 +1640,7 @@
                         <div class="card-footer-info"><span>11/28</span><strong>Débito</strong></div>
                     </div>
 
-                    <div class="credit-card-item" style="background-image: url('https://images.unsplash.com/photo-1550684848-fac1c5b4e853?w=600&auto=format&fit=crop&q=80');" onclick="selectCard(this)">
+                    <div class="credit-card-item" data-card-key="card-discover" style="background-image: url('https://images.unsplash.com/photo-1550684848-fac1c5b4e853?w=600&auto=format&fit=crop&q=80');" onclick="selectCard(this)">
                         <div class="card-top"><span>Banco Andino</span><span class="brand-badge brand-discover">DISCOVER</span></div>
                         <div class="card-middle">
                             <div class="card-chip"></div>
@@ -1578,7 +1652,7 @@
                         <div class="card-footer-info"><span>05/29</span><strong>Activa</strong></div>
                     </div>
 
-                    <div class="credit-card-item" style="background-image: url('https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=600&auto=format&fit=crop&q=80');" onclick="selectCard(this)">
+                    <div class="credit-card-item" data-card-key="card-diners" style="background-image: url('https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=600&auto=format&fit=crop&q=80');" onclick="selectCard(this)">
                         <div class="card-top"><span>Banco Continental</span><span class="brand-badge brand-diners">DINERS</span></div>
                         <div class="card-middle">
                             <div class="card-chip"></div>
@@ -2020,6 +2094,7 @@
 
         const PAYMENT_DEFAULTS = {
             cash:true, card:true, digital:true, transfer:true, gift:true, credit:true, other:true,
+            'card-visa':true, 'card-mc':true, 'card-amex':true, 'card-maestro':true, 'card-discover':true, 'card-diners':true,
             paypal:true, binance:true, applepay:true, googlepay:true, cashea:true, 'pago-movil':true, zelle:true, manual:true
         };
 
@@ -2097,7 +2172,22 @@
                 if (panel && !visible) panel.classList.remove('active');
             });
 
-            // 2. Filtrar submedios mediante selectores robustos por atributo data
+            // 2. Filtrar submedios de tarjetas individuales
+            const cardMap = {
+                'card-visa': '[data-card-key="card-visa"]',
+                'card-mc': '[data-card-key="card-mc"]',
+                'card-amex': '[data-card-key="card-amex"]',
+                'card-maestro': '[data-card-key="card-maestro"]',
+                'card-discover': '[data-card-key="card-discover"]',
+                'card-diners': '[data-card-key="card-diners"]'
+            };
+
+            Object.entries(cardMap).forEach(([key, selector]) => {
+                const el = document.querySelector(selector);
+                if (el) el.style.display = settings[key] !== false ? '' : 'none';
+            });
+
+            // 3. Filtrar submedios de billeteras digitales y alternativos
             const subMap = {
                 paypal: '[data-submethod-id="paypal"]',
                 binance: '[data-submethod-id="binance"]',
@@ -2114,19 +2204,19 @@
                 if (el) el.style.display = settings[key] !== false ? '' : 'none';
             });
 
-            // 3. Ocultar paneles principales si todos sus submétodos están desactivados
-            ['digital', 'other'].forEach(parent => {
+            // 4. Ocultar paneles principales si todos sus submétodos están desactivados
+            ['card', 'digital', 'other'].forEach(parent => {
                 const panel = document.getElementById('pay-' + parent);
                 if (!panel) return;
-                const visibleChildren = [...panel.querySelectorAll('.digital-option-btn')].some(el => getComputedStyle(el).display !== 'none');
+                const visibleChildren = [...panel.querySelectorAll('.credit-card-item, .digital-option-btn')].some(el => getComputedStyle(el).display !== 'none');
                 const tab = document.querySelector(`.method-tab[onclick*="'${parent}'"]`);
                 if (tab && settings[parent] !== false) tab.style.display = visibleChildren ? '' : 'none';
                 if (!visibleChildren) panel.classList.remove('active');
             });
 
-            // 4. Seleccionar la primera pestaña disponible si la actual quedó oculta
+            // 5. Seleccionar la primera pestaña disponible si la actual quedó oculta
             const activePanel = document.querySelector('.payment-panel-section.active');
-            if (!activePanel || (activePanel.id === 'pay-digital' && !settings.digital) || (activePanel.id === 'pay-other' && !settings.other)) {
+            if (!activePanel || (activePanel.id === 'pay-card' && !settings.card) || (activePanel.id === 'pay-digital' && !settings.digital) || (activePanel.id === 'pay-other' && !settings.other)) {
                 const first = document.querySelector('.method-tab:not([style*="display: none"])');
                 if (first) first.click();
             }
