@@ -730,12 +730,6 @@
         .brand-discover { background: #ff6000; color: #fff; }
         .brand-diners { background: #1b4a6b; color: #fff; }
         
-        /* Insignias especializadas para billeteras */
-        .brand-paypal { background: #003087; color: #0079c1; font-weight: 800; }
-        .brand-binance { background: #f0b90b; color: #181a20; }
-        .brand-applepay { background: #ffffff; color: #000000; }
-        .brand-googlepay { background: #4285f4; color: #ffffff; }
-
         .method-banner-card {
             background-size: cover;
             background-position: center;
@@ -794,7 +788,6 @@
             gap: 12px;
         }
         
-        /* --- ESTILOS MEJORADOS PARA LOGOS DE BILLETERAS --- */
         .wallet-logo-box {
             width: 38px;
             height: 38px;
@@ -918,7 +911,7 @@
             color: var(--accent);
             font-style: italic;
         }
-        .form-group input[type="text"] {
+        .form-group input[type="text"], .form-group input[type="password"] {
             background: var(--vault-panel);
             border: 1px solid var(--vault-line);
             border-radius: var(--radius-tight);
@@ -928,11 +921,11 @@
             font-family: 'IBM Plex Mono', ui-monospace, SFMono-Regular, monospace;
             transition: var(--transition-smooth);
         }
-        .form-group input[type="text"]::placeholder {
+        .form-group input::placeholder {
             color: var(--text-vault-mute);
             opacity: 0.6;
         }
-        .form-group input[type="text"]:focus {
+        .form-group input:focus {
             border-color: var(--accent);
             box-shadow: 0 0 0 3px var(--accent-soft);
         }
@@ -1028,8 +1021,8 @@
         .settings-header p { color:var(--text-vault-mute); margin-top:7px; max-width:720px; }
         .settings-status { display:flex; align-items:center; gap:8px; padding:10px 14px; border:1px solid var(--line); border-radius:999px; font-size:.82rem; white-space:nowrap; background:var(--paper); }
         .settings-status-dot { width:8px; height:8px; border-radius:50%; background:#22c55e; }
-        .payment-config-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; }
-        .payment-config-card { border:1px solid var(--line); border-radius:14px; padding:18px; background:var(--paper); box-shadow:0 8px 24px rgba(0,0,0,.02); }
+        .payment-config-grid { display:grid; grid-template-columns:repeat(1,minmax(0,1fr)); gap:16px; }
+        .payment-config-card { border:1px solid var(--line); border-radius:14px; padding:20px; background:var(--paper); box-shadow:0 8px 24px rgba(0,0,0,.02); }
         .payment-config-card.disabled { opacity:.65; }
         .payment-config-top { display:flex; justify-content:space-between; align-items:flex-start; gap:16px; }
         .payment-config-title { display:flex; align-items:center; gap:11px; }
@@ -1042,18 +1035,27 @@
         .switch-track::after { content:''; position:absolute; width:21px; height:21px; left:3px; top:3px; border-radius:50%; background:#fff; transition:.2s; box-shadow:0 1px 3px rgba(0,0,0,.2); }
         .switch-control input:checked + .switch-track { background:var(--accent); }
         .switch-control input:checked + .switch-track::after { transform:translateX(21px); }
-        .config-submethods { margin-top:15px; padding-top:14px; border-top:1px solid var(--line); display:grid; gap:8px; }
-        .config-submethod { display:flex; align-items:center; justify-content:space-between; gap:10px; padding:9px 10px; border-radius:9px; background:rgba(0,0,0,.025); }
-        .config-submethod span { font-size:.84rem; }
+        .config-submethods { margin-top:15px; padding-top:14px; border-top:1px solid var(--line); display:grid; gap:12px; }
+        .config-submethod-item { background: rgba(0,0,0,.02); border: 1px solid var(--line); border-radius: 10px; padding: 12px; display: flex; flex-direction: column; gap: 10px; }
+        .config-submethod-header { display:flex; align-items:center; justify-content:space-between; gap:10px; }
+        .config-submethod-header span { font-size:.88rem; font-weight: 600; }
         .settings-footer { margin-top:22px; display:flex; justify-content:flex-end; gap:10px; }
         .btn-settings-primary { border:0; background:var(--accent); color:#fff; padding:12px 20px; border-radius:9px; font-weight:700; cursor:pointer; transition: var(--transition-smooth); }
         .btn-settings-primary:hover { background: var(--accent-strong); }
         .btn-settings-secondary { border:1px solid var(--line); background:transparent; color:var(--ink); padding:12px 20px; border-radius:9px; font-weight:700; cursor:pointer; transition: var(--transition-smooth); }
         .btn-settings-secondary:hover { background: var(--paper-line-soft); }
 
+        .config-credentials-grid {
+            margin-top: 14px;
+            padding-top: 14px;
+            border-top: 1px dashed var(--line);
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+        }
+
         /* ==================== RESPONSIVE ==================== */
 
-        /* Escritorio pequeño / tablet horizontal */
         @media (max-width: 1180px) {
             #view-pos { grid-template-columns: 210px 1fr; }
             .pos-main-workspace { grid-template-columns: 1fr 290px; }
@@ -1061,7 +1063,6 @@
             .payment-methods-top { grid-template-columns: repeat(4, 1fr); }
         }
 
-        /* Tablet vertical */
         @media (max-width: 1024px) {
             #view-pos {
                 grid-template-columns: 1fr;
@@ -1121,10 +1122,9 @@
             .settings-sidebar { display: none; }
             .settings-back-mobile { display: inline-flex !important; }
             .settings-main { padding: 22px; }
-            .payment-config-grid { grid-template-columns: 1fr; }
+            .config-credentials-grid { grid-template-columns: 1fr; }
         }
 
-        /* Móvil */
         @media (max-width: 640px) {
             #view-pos > aside .brand-box p { display: none; }
             header.pos-header { padding: 10px 12px; }
@@ -1147,6 +1147,7 @@
             .settings-header { flex-direction: column; align-items: flex-start; }
             .settings-main { padding: 16px; }
             .payment-config-top { flex-wrap: wrap; }
+            .config-credentials-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -1169,12 +1170,7 @@
                 Hola, <strong style="color: var(--paper);">Premium</strong>
             </div>
             <ul class="menu-list">
-                <!--<li class="active">🔍 Buscar en el menú...</li>
-                <li>❌ Anular venta</li>
-                <li>👤 Seleccionar cliente</li>-->
                 <li onclick="switchView('payment')">💳 Ir a pasarela de pagos</li>
-               <!-- <li>📦 Gestión inventario</li>
-                <li onclick="alert('Sesión cerrada')">🚪 Cerrar sesión</li>-->
             </ul>
         </aside>
 
@@ -1214,10 +1210,7 @@
             </section>
 
             <section class="actions-panel">
-                <!--<button class="action-icon-btn"><span>✖</span> Anular</button>
-                <button class="action-icon-btn"><span>👤</span> Cliente</button>-->
                 <button class="action-icon-btn" onclick="switchView('payment')"><span>💳</span> Pagar</button>
-                <!--<button class="action-icon-btn"><span>📦</span> Inventario</button>-->
             </section>
 
             <section class="calc-panel">
@@ -1254,44 +1247,215 @@
             <button class="btn settings-back-mobile" onclick="switchView('pos')" style="display:none; margin-bottom: 16px;">← Volver al POS</button>
             <div class="settings-header">
                 <div>
-                    <h2>Medios de pago</h2>
-                    <p>Controla de forma individual qué métodos y alternativas aparecen en la pantalla de cobro. Los cambios se guardan localmente.</p>
+                    <h2>Medios de pago y Credenciales</h2>
+                    <p>Configura los parámetros específicos de cada medio de pago e individualiza ID, Clave y Correo para cada submedio.</p>
                 </div>
                 <div class="settings-status"><span class="settings-status-dot"></span><span id="payment-settings-status">Configuración activa</span></div>
             </div>
 
             <div class="payment-config-grid">
+                <!-- EFECTIVO -->
                 <div class="payment-config-card" data-config-card="cash">
-                    <div class="payment-config-top"><div class="payment-config-title"><div class="payment-config-icon">⚡</div><div><h3>Efectivo</h3><p>Pago directo en caja</p></div></div><label class="switch-control"><input type="checkbox" data-payment-key="cash" checked onchange="previewPaymentSettings()"><span class="switch-track"></span></label></div>
-                </div>
-                <div class="payment-config-card" data-config-card="card">
-                    <div class="payment-config-top"><div class="payment-config-title"><div class="payment-config-icon">💳</div><div><h3>Tarjeta</h3><p>Crédito, débito y tarjetas guardadas</p></div></div><label class="switch-control"><input type="checkbox" data-payment-key="card" checked onchange="previewPaymentSettings()"><span class="switch-track"></span></label></div>
-                </div>
-                <div class="payment-config-card" data-config-card="digital">
-                    <div class="payment-config-top"><div class="payment-config-title"><div class="payment-config-icon">📱</div><div><h3>Billeteras</h3><p>Alternativas digitales</p></div></div><label class="switch-control"><input type="checkbox" data-payment-key="digital" checked onchange="previewPaymentSettings()"><span class="switch-track"></span></label></div>
-                    <div class="config-submethods">
-                        <div class="config-submethod"><span>PayPal</span><label class="switch-control"><input type="checkbox" data-subpayment-key="paypal" checked onchange="previewPaymentSettings()"><span class="switch-track"></span></label></div>
-                        <div class="config-submethod"><span>Binance Pay</span><label class="switch-control"><input type="checkbox" data-subpayment-key="binance" checked onchange="previewPaymentSettings()"><span class="switch-track"></span></label></div>
-                        <div class="config-submethod"><span>Apple Pay</span><label class="switch-control"><input type="checkbox" data-subpayment-key="applepay" checked onchange="previewPaymentSettings()"><span class="switch-track"></span></label></div>
-                        <div class="config-submethod"><span>G Pay</span><label class="switch-control"><input type="checkbox" data-subpayment-key="googlepay" checked onchange="previewPaymentSettings()"><span class="switch-track"></span></label></div>
+                    <div class="payment-config-top">
+                        <div class="payment-config-title">
+                            <div class="payment-config-icon">⚡</div>
+                            <div><h3>Efectivo</h3><p>Parámetros de caja física</p></div>
+                        </div>
+                        <label class="switch-control"><input type="checkbox" data-payment-key="cash" checked onchange="previewPaymentSettings()"><span class="switch-track"></span></label>
+                    </div>
+                    <div class="config-credentials-grid">
+                        <div class="form-group"><label>ID de Caja / Terminal</label><input type="text" data-field="cash-id" placeholder="Ej. CAJA-01"></div>
+                        <div class="form-group"><label>Usuario cajero</label><input type="text" data-field="cash-user" placeholder="Usuario operativo"></div>
                     </div>
                 </div>
-                <div class="payment-config-card" data-config-card="transfer">
-                    <div class="payment-config-top"><div class="payment-config-title"><div class="payment-config-icon">🏦</div><div><h3>Transferencia</h3><p>Transferencia bancaria y comprobante</p></div></div><label class="switch-control"><input type="checkbox" data-payment-key="transfer" checked onchange="previewPaymentSettings()"><span class="switch-track"></span></label></div>
+
+                <!-- TARJETA -->
+                <div class="payment-config-card" data-config-card="card">
+                    <div class="payment-config-top">
+                        <div class="payment-config-title">
+                            <div class="payment-config-icon">💳</div>
+                            <div><h3>Tarjeta</h3><p>Pasarela de tarjetas de crédito y débito</p></div>
+                        </div>
+                        <label class="switch-control"><input type="checkbox" data-payment-key="card" checked onchange="previewPaymentSettings()"><span class="switch-track"></span></label>
+                    </div>
+                    <div class="config-credentials-grid">
+                        <div class="form-group"><label>ID de Comercio (MID)</label><input type="text" data-field="card-wallet-id" placeholder="Merchant ID"></div>
+                        <div class="form-group"><label>Cuenta de recepción / Banco</label><input type="text" data-field="card-account" placeholder="Banco adquiriente"></div>
+                        <div class="form-group"><label>Usuario API</label><input type="text" data-field="card-user" placeholder="API User"></div>
+                        <div class="form-group"><label>Contraseña / Secret Key</label><input type="password" data-field="card-pass" placeholder="••••••••"></div>
+                    </div>
                 </div>
-                <div class="payment-config-card" data-config-card="gift">
-                    <div class="payment-config-top"><div class="payment-config-title"><div class="payment-config-icon">🎁</div><div><h3>Tarjeta regalo</h3><p>Gift cards y códigos digitales</p></div></div><label class="switch-control"><input type="checkbox" data-payment-key="gift" checked onchange="previewPaymentSettings()"><span class="switch-track"></span></label></div>
-                </div>
-                <div class="payment-config-card" data-config-card="credit">
-                    <div class="payment-config-top"><div class="payment-config-title"><div class="payment-config-icon">👤</div><div><h3>Crédito</h3><p>Financiamiento de la compra</p></div></div><label class="switch-control"><input type="checkbox" data-payment-key="credit" checked onchange="previewPaymentSettings()"><span class="switch-track"></span></label></div>
-                </div>
-                <div class="payment-config-card" data-config-card="other">
-                    <div class="payment-config-top"><div class="payment-config-title"><div class="payment-config-icon">➕</div><div><h3>Alternativos y Apps</h3><p>Cashea, Zelle, Pago móvil y manual</p></div></div><label class="switch-control"><input type="checkbox" data-payment-key="other" checked onchange="previewPaymentSettings()"><span class="switch-track"></span></label></div>
+
+                <!-- BILLETERAS DIGITALES -->
+                <div class="payment-config-card" data-config-card="digital">
+                    <div class="payment-config-top">
+                        <div class="payment-config-title">
+                            <div class="payment-config-icon">📱</div>
+                            <div><h3>Billeteras Digitales</h3><p>PayPal, Binance, Apple Pay, Google Pay</p></div>
+                        </div>
+                        <label class="switch-control"><input type="checkbox" data-payment-key="digital" checked onchange="previewPaymentSettings()"><span class="switch-track"></span></label>
+                    </div>
                     <div class="config-submethods">
-                        <div class="config-submethod"><span>🛍️ Cashea</span><label class="switch-control"><input type="checkbox" data-subpayment-key="cashea" checked onchange="previewPaymentSettings()"><span class="switch-track"></span></label></div>
-                        <div class="config-submethod"><span>📲 Pago móvil</span><label class="switch-control"><input type="checkbox" data-subpayment-key="pago-movil" checked onchange="previewPaymentSettings()"><span class="switch-track"></span></label></div>
-                        <div class="config-submethod"><span>💬 Zelle</span><label class="switch-control"><input type="checkbox" data-subpayment-key="zelle" checked onchange="previewPaymentSettings()"><span class="switch-track"></span></label></div>
-                        <div class="config-submethod"><span>🧾 Pago manual</span><label class="switch-control"><input type="checkbox" data-subpayment-key="manual" checked onchange="previewPaymentSettings()"><span class="switch-track"></span></label></div>
+                        <!-- PayPal -->
+                        <div class="config-submethod-item">
+                            <div class="config-submethod-header">
+                                <span>PayPal</span>
+                                <label class="switch-control"><input type="checkbox" data-subpayment-key="paypal" checked onchange="previewPaymentSettings()"><span class="switch-track"></span></label>
+                            </div>
+                            <div class="config-credentials-grid" style="margin-top: 5px; padding-top: 10px;">
+                                <div class="form-group"><label>ID de Cuenta</label><input type="text" data-field="sub-paypal-id" placeholder="ID PayPal"></div>
+                                <div class="form-group"><label>Correo de recepción</label><input type="text" data-field="sub-paypal-email" placeholder="paypal@correo.com"></div>
+                                <div class="form-group"><label>Clave / Secret</label><input type="password" data-field="sub-paypal-pass" placeholder="••••••••"></div>
+                            </div>
+                        </div>
+                        <!-- Binance Pay -->
+                        <div class="config-submethod-item">
+                            <div class="config-submethod-header">
+                                <span>Binance Pay</span>
+                                <label class="switch-control"><input type="checkbox" data-subpayment-key="binance" checked onchange="previewPaymentSettings()"><span class="switch-track"></span></label>
+                            </div>
+                            <div class="config-credentials-grid" style="margin-top: 5px; padding-top: 10px;">
+                                <div class="form-group"><label>ID de Comercio / Pay ID</label><input type="text" data-field="sub-binance-id" placeholder="Pay ID"></div>
+                                <div class="form-group"><label>Correo / Cuenta</label><input type="text" data-field="sub-binance-email" placeholder="binance@correo.com"></div>
+                                <div class="form-group"><label>Clave API</label><input type="password" data-field="sub-binance-pass" placeholder="••••••••"></div>
+                            </div>
+                        </div>
+                        <!-- Apple Pay -->
+                        <div class="config-submethod-item">
+                            <div class="config-submethod-header">
+                                <span>Apple Pay</span>
+                                <label class="switch-control"><input type="checkbox" data-subpayment-key="applepay" checked onchange="previewPaymentSettings()"><span class="switch-track"></span></label>
+                            </div>
+                            <div class="config-credentials-grid" style="margin-top: 5px; padding-top: 10px;">
+                                <div class="form-group"><label>ID de Merchant</label><input type="text" data-field="sub-apple-id" placeholder="Merchant ID Apple"></div>
+                                <div class="form-group"><label>Correo Apple ID</label><input type="text" data-field="sub-apple-email" placeholder="icloud@correo.com"></div>
+                                <div class="form-group"><label>Clave de Certificado</label><input type="password" data-field="sub-apple-pass" placeholder="••••••••"></div>
+                            </div>
+                        </div>
+                        <!-- Google Pay -->
+                        <div class="config-submethod-item">
+                            <div class="config-submethod-header">
+                                <span>G Pay</span>
+                                <label class="switch-control"><input type="checkbox" data-subpayment-key="googlepay" checked onchange="previewPaymentSettings()"><span class="switch-track"></span></label>
+                            </div>
+                            <div class="config-credentials-grid" style="margin-top: 5px; padding-top: 10px;">
+                                <div class="form-group"><label>ID de Comercio Google</label><input type="text" data-field="sub-google-id" placeholder="Merchant ID Google"></div>
+                                <div class="form-group"><label>Correo asociado</label><input type="text" data-field="sub-google-email" placeholder="gmail@correo.com"></div>
+                                <div class="form-group"><label>Clave / Token</label><input type="password" data-field="sub-google-pass" placeholder="••••••••"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TRANSFERENCIA -->
+                <div class="payment-config-card" data-config-card="transfer">
+                    <div class="payment-config-top">
+                        <div class="payment-config-title">
+                            <div class="payment-config-icon">🏦</div>
+                            <div><h3>Transferencia Bancaria</h3><p>Datos de cuentas receptoras</p></div>
+                        </div>
+                        <label class="switch-control"><input type="checkbox" data-payment-key="transfer" checked onchange="previewPaymentSettings()"><span class="switch-track"></span></label>
+                    </div>
+                    <div class="config-credentials-grid">
+                        <div class="form-group"><label>ID / Código de Banco</label><input type="text" data-field="transfer-wallet-id" placeholder="Código swift / aba"></div>
+                        <div class="form-group"><label>Cuenta de recepción</label><input type="text" data-field="transfer-account" placeholder="N.º de cuenta bancaria"></div>
+                        <div class="form-group"><label>Usuario de banca en línea</label><input type="text" data-field="transfer-user" placeholder="Usuario empresarial"></div>
+                        <div class="form-group"><label>Clave de acceso / Token</label><input type="password" data-field="transfer-pass" placeholder="••••••••"></div>
+                    </div>
+                </div>
+
+                <!-- TARJETA REGALO -->
+                <div class="payment-config-card" data-config-card="gift">
+                    <div class="payment-config-top">
+                        <div class="payment-config-title">
+                            <div class="payment-config-icon">🎁</div>
+                            <div><h3>Tarjeta Regalo</h3><p>Gestión de Gift Cards</p></div>
+                        </div>
+                        <label class="switch-control"><input type="checkbox" data-payment-key="gift" checked onchange="previewPaymentSettings()"><span class="switch-track"></span></label>
+                    </div>
+                    <div class="config-credentials-grid">
+                        <div class="form-group"><label>ID de Sistema GiftCard</label><input type="text" data-field="gift-wallet-id" placeholder="ID Emisor"></div>
+                        <div class="form-group"><label>Cuenta contable receptora</label><input type="text" data-field="gift-account" placeholder="Cuenta pasivo/regalos"></div>
+                        <div class="form-group"><label>Usuario administrador</label><input type="text" data-field="gift-user" placeholder="Admin GiftCards"></div>
+                        <div class="form-group"><label>Contraseña de validación</label><input type="password" data-field="gift-pass" placeholder="••••••••"></div>
+                    </div>
+                </div>
+
+                <!-- CRÉDITO -->
+                <div class="payment-config-card" data-config-card="credit">
+                    <div class="payment-config-top">
+                        <div class="payment-config-title">
+                            <div class="payment-config-icon">👤</div>
+                            <div><h3>Crédito</h3><p>Financiamiento interno de compras</p></div>
+                        </div>
+                        <label class="switch-control"><input type="checkbox" data-payment-key="credit" checked onchange="previewPaymentSettings()"><span class="switch-track"></span></label>
+                    </div>
+                    <div class="config-credentials-grid">
+                        <div class="form-group"><label>ID de Línea de Crédito</label><input type="text" data-field="credit-wallet-id" placeholder="ID Crédito interno"></div>
+                        <div class="form-group"><label>Cuenta por cobrar (CxC)</label><input type="text" data-field="credit-account" placeholder="Cuenta contable CxC"></div>
+                        <div class="form-group"><label>Usuario aprobador</label><input type="text" data-field="credit-user" placeholder="Supervisor créditos"></div>
+                        <div class="form-group"><label>Contraseña de autorización</label><input type="password" data-field="credit-pass" placeholder="••••••••"></div>
+                    </div>
+                </div>
+
+                <!-- ALTERNATIVOS Y APPS -->
+                <div class="payment-config-card" data-config-card="other">
+                    <div class="payment-config-top">
+                        <div class="payment-config-title">
+                            <div class="payment-config-icon">➕</div>
+                            <div><h3>Alternativos y Apps</h3><p>Cashea, Zelle, Pago móvil y manual</p></div>
+                        </div>
+                        <label class="switch-control"><input type="checkbox" data-payment-key="other" checked onchange="previewPaymentSettings()"><span class="switch-track"></span></label>
+                    </div>
+                    <div class="config-submethods">
+                        <!-- Cashea -->
+                        <div class="config-submethod-item">
+                            <div class="config-submethod-header">
+                                <span>🛍️ Cashea</span>
+                                <label class="switch-control"><input type="checkbox" data-subpayment-key="cashea" checked onchange="previewPaymentSettings()"><span class="switch-track"></span></label>
+                            </div>
+                            <div class="config-credentials-grid" style="margin-top: 5px; padding-top: 10px;">
+                                <div class="form-group"><label>ID de Comercio Cashea</label><input type="text" data-field="sub-cashea-id" placeholder="ID Cashea"></div>
+                                <div class="form-group"><label>Correo de afiliación</label><input type="text" data-field="sub-cashea-email" placeholder="cashea@correo.com"></div>
+                                <div class="form-group"><label>Clave API</label><input type="password" data-field="sub-cashea-pass" placeholder="••••••••"></div>
+                            </div>
+                        </div>
+                        <!-- Pago móvil -->
+                        <div class="config-submethod-item">
+                            <div class="config-submethod-header">
+                                <span>📲 Pago móvil</span>
+                                <label class="switch-control"><input type="checkbox" data-subpayment-key="pago-movil" checked onchange="previewPaymentSettings()"><span class="switch-track"></span></label>
+                            </div>
+                            <div class="config-credentials-grid" style="margin-top: 5px; padding-top: 10px;">
+                                <div class="form-group"><label>ID / Cédula / RIF</label><input type="text" data-field="sub-pagomovil-id" placeholder="J-12345678"></div>
+                                <div class="form-group"><label>Correo de notificación</label><input type="text" data-field="sub-pagomovil-email" placeholder="pagomovil@correo.com"></div>
+                                <div class="form-group"><label>Clave de operaciones</label><input type="password" data-field="sub-pagomovil-pass" placeholder="••••••••"></div>
+                            </div>
+                        </div>
+                        <!-- Zelle -->
+                        <div class="config-submethod-item">
+                            <div class="config-submethod-header">
+                                <span>💬 Zelle</span>
+                                <label class="switch-control"><input type="checkbox" data-subpayment-key="zelle" checked onchange="previewPaymentSettings()"><span class="switch-track"></span></label>
+                            </div>
+                            <div class="config-credentials-grid" style="margin-top: 5px; padding-top: 10px;">
+                                <div class="form-group"><label>ID / Teléfono Zelle</label><input type="text" data-field="sub-zelle-id" placeholder="+1 (555) 000-0000"></div>
+                                <div class="form-group"><label>Correo Zelle</label><input type="text" data-field="sub-zelle-email" placeholder="zelle@empresa.com"></div>
+                                <div class="form-group"><label>Clave de banca Zelle</label><input type="password" data-field="sub-zelle-pass" placeholder="••••••••"></div>
+                            </div>
+                        </div>
+                        <!-- Pago manual -->
+                        <div class="config-submethod-item">
+                            <div class="config-submethod-header">
+                                <span>🧾 Pago manual</span>
+                                <label class="switch-control"><input type="checkbox" data-subpayment-key="manual" checked onchange="previewPaymentSettings()"><span class="switch-track"></span></label>
+                            </div>
+                            <div class="config-credentials-grid" style="margin-top: 5px; padding-top: 10px;">
+                                <div class="form-group"><label>ID de Terminal Manual</label><input type="text" data-field="sub-manual-id" placeholder="ID Manual"></div>
+                                <div class="form-group"><label>Correo administrativo</label><input type="text" data-field="sub-manual-email" placeholder="admin@correo.com"></div>
+                                <div class="form-group"><label>Contraseña cajero</label><input type="password" data-field="sub-manual-pass" placeholder="••••••••"></div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1429,7 +1593,7 @@
                 <button class="btn-action-primary" onclick="alert('Pago con tarjeta procesado con éxito')">Pagar 75.77 USD →</button>
             </div>
 
-            <!-- 2. BILLETERAS DIGITALES (LOGOS MEJORADOS) -->
+            <!-- 2. BILLETERAS DIGITALES -->
             <div id="pay-digital" class="payment-panel-section">
                 <div class="method-banner-card" style="background-image: url('https://images.unsplash.com/photo-1563013544-824ae1b704d3?w=600&auto=format&fit=crop&q=80');">
                     <div>
@@ -1438,7 +1602,7 @@
                     </div>
                 </div>
                 <div class="digital-options digital-options-grid">
-                    <div class="digital-option-btn active" onclick="selectDigitalWallet(this)">
+                    <div class="digital-option-btn active" data-submethod-id="paypal" onclick="selectDigitalWallet(this)">
                         <span class="method-label">
                             <div class="wallet-logo-box wallet-paypal">P</div>
                             <div>
@@ -1448,7 +1612,7 @@
                         </span>
                         <span class="check">✓ conectado</span>
                     </div>
-                    <div class="digital-option-btn" onclick="selectDigitalWallet(this)">
+                    <div class="digital-option-btn" data-submethod-id="binance" onclick="selectDigitalWallet(this)">
                         <span class="method-label">
                             <div class="wallet-logo-box wallet-binance">B</div>
                             <div>
@@ -1458,7 +1622,7 @@
                         </span>
                         <span class="check">Conectar</span>
                     </div>
-                    <div class="digital-option-btn" onclick="selectDigitalWallet(this)">
+                    <div class="digital-option-btn" data-submethod-id="applepay" onclick="selectDigitalWallet(this)">
                         <span class="method-label">
                             <div class="wallet-logo-box wallet-apple"></div>
                             <div>
@@ -1468,7 +1632,7 @@
                         </span>
                         <span class="check">Conectar</span>
                     </div>
-                    <div class="digital-option-btn" onclick="selectDigitalWallet(this)">
+                    <div class="digital-option-btn" data-submethod-id="googlepay" onclick="selectDigitalWallet(this)">
                         <span class="method-label">
                             <div class="wallet-logo-box wallet-google">G</div>
                             <div>
@@ -1599,7 +1763,7 @@
                 <button class="btn-action-secondary" onclick="alert('Gift card aplicada')">Pagar con tarjeta de regalo</button>
             </div>
 
-            <!-- 6. OTROS MEDIOS / MÉTODOS ALTERNATIVOS -->
+            <!-- 6. OTROS MEDIOS -->
             <div id="pay-other" class="payment-panel-section">
                 <div class="method-banner-card" style="background-image: url('https://images.unsplash.com/photo-1556740758-90de374c12ad?w=600&auto=format&fit=crop&q=80');">
                     <div>
@@ -1608,7 +1772,7 @@
                     </div>
                 </div>
                 <div class="digital-options digital-options-grid">
-                    <div class="digital-option-btn active" onclick="selectOtherPayment(this,'Cashea')">
+                    <div class="digital-option-btn active" data-submethod-id="cashea" onclick="selectOtherPayment(this,'Cashea')">
                         <span class="method-label">
                             <div class="wallet-logo-box" style="background: #ff5722; color: #fff;">🛍️</div>
                             <div>
@@ -1618,7 +1782,7 @@
                         </span>
                         <span class="check">✓ seleccionado</span>
                     </div>
-                    <div class="digital-option-btn" onclick="selectOtherPayment(this,'Pago móvil')">
+                    <div class="digital-option-btn" data-submethod-id="pago-movil" onclick="selectOtherPayment(this,'Pago móvil')">
                         <span class="method-label">
                             <div class="wallet-logo-box" style="background: #00897b; color: #fff;">📱</div>
                             <div>
@@ -1628,7 +1792,7 @@
                         </span>
                         <span class="check">Seleccionar</span>
                     </div>
-                    <div class="digital-option-btn" onclick="selectOtherPayment(this,'Zelle')">
+                    <div class="digital-option-btn" data-submethod-id="zelle" onclick="selectOtherPayment(this,'Zelle')">
                         <span class="method-label">
                             <div class="wallet-logo-box" style="background: #6c1cd3; color: #fff;">💬</div>
                             <div>
@@ -1638,7 +1802,7 @@
                         </span>
                         <span class="check">Seleccionar</span>
                     </div>
-                    <div class="digital-option-btn" onclick="selectOtherPayment(this,'Manual')">
+                    <div class="digital-option-btn" data-submethod-id="manual" onclick="selectOtherPayment(this,'Manual')">
                         <span class="method-label">
                             <div class="wallet-logo-box" style="background: #455a64; color: #fff;">🧾</div>
                             <div>
@@ -1782,7 +1946,6 @@
             el.classList.add('active');
             el.querySelector('.check').textContent = '✓ conectado';
 
-            // Sincroniza el bloque de datos de cuenta con la billetera seleccionada
             const walletName = el.querySelector('strong') ? el.querySelector('strong').textContent.trim() : 'billetera';
             const placeholders = {
                 'PayPal': { label: 'ID de cuenta / correo', placeholder: 'Ej. cliente@correo.com' },
@@ -1799,7 +1962,6 @@
             if (input) { input.placeholder = config.placeholder; input.value = ''; }
         }
 
-        // Valida el ID de cuenta antes de confirmar el pago con billetera digital
         function submitWalletPayment() {
             const activeWallet = document.querySelector('#pay-digital .digital-option-btn.active strong');
             const walletName = activeWallet ? activeWallet.textContent.trim() : 'billetera';
@@ -1872,6 +2034,13 @@
                 const key = input.dataset.paymentKey || input.dataset.subpaymentKey;
                 input.checked = settings[key] !== false;
             });
+            const creds = JSON.parse(localStorage.getItem('psk-payment-credentials') || '{}');
+            document.querySelectorAll('[data-field]').forEach(input => {
+                const field = input.dataset.field;
+                if (creds[field] !== undefined) {
+                    input.value = creds[field];
+                }
+            });
             previewPaymentSettings();
         }
 
@@ -1895,6 +2064,13 @@
                 return;
             }
             localStorage.setItem('psk-payment-settings', JSON.stringify(settings));
+
+            const creds = {};
+            document.querySelectorAll('[data-field]').forEach(input => {
+                creds[input.dataset.field] = input.value;
+            });
+            localStorage.setItem('psk-payment-credentials', JSON.stringify(creds));
+
             applyPaymentSettings();
             document.getElementById('payment-settings-status').textContent = 'Configuración guardada';
             setTimeout(() => { const el=document.getElementById('payment-settings-status'); if(el) el.textContent='Configuración activa'; }, 1800);
@@ -1902,12 +2078,16 @@
 
         function resetPaymentSettings() {
             document.querySelectorAll('[data-payment-key], [data-subpayment-key]').forEach(input => input.checked = true);
+            document.querySelectorAll('[data-field]').forEach(input => input.value = '');
+            localStorage.removeItem('psk-payment-credentials');
             previewPaymentSettings();
             savePaymentSettings();
         }
 
         function applyPaymentSettings() {
             const settings = getPaymentSettings();
+            
+            // 1. Filtrar pestañas principales
             const tabMap = { cash:'cash', card:'card', digital:'digital', transfer:'transfer', gift:'gift', credit:'credit', other:'other' };
             Object.entries(tabMap).forEach(([key, id]) => {
                 const tab = document.querySelector(`.method-tab[onclick*="'${id}'"]`);
@@ -1916,17 +2096,26 @@
                 if (tab) tab.style.display = visible ? '' : 'none';
                 if (panel && !visible) panel.classList.remove('active');
             });
+
+            // 2. Filtrar submedios mediante selectores robustos por atributo data
             const subMap = {
-                paypal:'#pay-digital .digital-option-btn:nth-child(1)', binance:'#pay-digital .digital-option-btn:nth-child(2)',
-                applepay:'#pay-digital .digital-option-btn:nth-child(3)', googlepay:'#pay-digital .digital-option-btn:nth-child(4)',
-                cashea:'#pay-other .digital-option-btn:nth-child(1)', 'pago-movil':'#pay-other .digital-option-btn:nth-child(2)',
-                zelle:'#pay-other .digital-option-btn:nth-child(3)', manual:'#pay-other .digital-option-btn:nth-child(4)'
+                paypal: '[data-submethod-id="paypal"]',
+                binance: '[data-submethod-id="binance"]',
+                applepay: '[data-submethod-id="applepay"]',
+                googlepay: '[data-submethod-id="googlepay"]',
+                cashea: '[data-submethod-id="cashea"]',
+                'pago-movil': '[data-submethod-id="pago-movil"]',
+                zelle: '[data-submethod-id="zelle"]',
+                manual: '[data-submethod-id="manual"]'
             };
+
             Object.entries(subMap).forEach(([key, selector]) => {
                 const el = document.querySelector(selector);
                 if (el) el.style.display = settings[key] !== false ? '' : 'none';
             });
-            ['digital','other'].forEach(parent => {
+
+            // 3. Ocultar paneles principales si todos sus submétodos están desactivados
+            ['digital', 'other'].forEach(parent => {
                 const panel = document.getElementById('pay-' + parent);
                 if (!panel) return;
                 const visibleChildren = [...panel.querySelectorAll('.digital-option-btn')].some(el => getComputedStyle(el).display !== 'none');
@@ -1934,8 +2123,10 @@
                 if (tab && settings[parent] !== false) tab.style.display = visibleChildren ? '' : 'none';
                 if (!visibleChildren) panel.classList.remove('active');
             });
+
+            // 4. Seleccionar la primera pestaña disponible si la actual quedó oculta
             const activePanel = document.querySelector('.payment-panel-section.active');
-            if (!activePanel || activePanel.id === 'pay-digital' && !settings.digital || activePanel.id === 'pay-other' && !settings.other) {
+            if (!activePanel || (activePanel.id === 'pay-digital' && !settings.digital) || (activePanel.id === 'pay-other' && !settings.other)) {
                 const first = document.querySelector('.method-tab:not([style*="display: none"])');
                 if (first) first.click();
             }
