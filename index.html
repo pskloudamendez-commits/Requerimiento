@@ -132,10 +132,11 @@
             color: #fff;
         }
 
-        .brand-box h1 {
+        .brand-box h1, .brand-title h1, .settings-brand h1 {
             font-size: 1.05rem;
             font-weight: 600;
             letter-spacing: 0.02em;
+            color: #ffffff !important;
         }
 
         .brand-box p {
@@ -449,8 +450,12 @@
 
         .brand-header {
             display: flex;
-            align-items: flex-start;
+            align-items: center;
             gap: 12px;
+            background: var(--sidebar-grad);
+            padding: 16px;
+            border-radius: var(--radius-card);
+            box-shadow: var(--shadow-sm);
         }
 
         .brand-header .brand-title {
@@ -475,13 +480,13 @@
             font-size: 1.15rem;
             font-weight: 600;
             letter-spacing: 0.02em;
-            color: var(--text-vault);
+            color: #ffffff !important;
             margin-bottom: 3px;
         }
 
         .brand-title p {
-            font-size: 0.82rem;
-            color: var(--text-vault-mute);
+            font-size: 0.78rem;
+            color: rgba(255, 255, 255, 0.7);
         }
 
         .card-box {
@@ -2234,82 +2239,23 @@
             const convertedTotal = (baseTotal * rate).toFixed(2);
             const convertedTax = (0.22 * rate).toFixed(2);
 
-            // 1. POS View Screen & Summaries
             document.getElementById('screen').textContent = convertedTotal + ' ' + currentCurrency;
             document.getElementById('summary-cash-val').textContent = convertedTotal + ' ' + currentCurrency;
             document.getElementById('summary-total-val').textContent = convertedTotal + ' ' + currentCurrency;
 
-            // 2. Payment View Summary & Banners
             document.getElementById('pay-total-val').textContent = convertedTotal + ' ' + currentCurrency;
             document.getElementById('pay-tax-val').textContent = convertedTax + ' ' + currentCurrency;
             document.getElementById('importe-banner-val').textContent = convertedTotal + ' ' + currentCurrency;
             
-            // 3. Action Buttons & Instructions
             document.getElementById('btn-pay-card').textContent = 'Pagar ' + convertedTotal + ' ' + currentCurrency + ' →';
             document.getElementById('btn-pay-digital').textContent = 'Pagar ' + convertedTotal + ' ' + currentCurrency + ' →';
             document.getElementById('cash-instruction-text').textContent = 'Paga la cantidad exacta de ' + convertedTotal + ' ' + currentCurrency + ' en efectivo.';
 
-            // 4. Alternative Payments / Cashea
             document.getElementById('other-monto').textContent = convertedTotal + ' ' + currentCurrency;
             const cuota = (convertedTotal / 3).toFixed(2);
             document.getElementById('other-inicial').textContent = cuota + ' ' + currentCurrency;
             document.getElementById('other-financiado').textContent = (convertedTotal - cuota).toFixed(2) + ' ' + currentCurrency;
             document.getElementById('other-cuota').textContent = cuota + ' ' + currentCurrency;
-
-            // 5. Gift Cards Balances
-            document.querySelectorAll('.gift-conv').forEach(item => {
-                item.textContent = convertedTotal + ' ' + currentCurrency;
-            });
-
-            // 6. Form labels currency indicators
-            const transferLabelAlt = document.getElementById('transfer-label-alt');
-            if (transferLabelAlt) transferLabelAlt.textContent = 'En ' + currentCurrency;
-            const creditLabelAlt = document.getElementById('credit-label-alt');
-            if (creditLabelAlt) creditLabelAlt.textContent = 'En ' + currentCurrency;
-
-            // Generar un nuevo código aleatorio aplicando el total actual
-            const randomCode = 'PSK-' + Math.random().toString(36).substring(2, 6).toUpperCase() + '-' + Math.round(baseTotal * 100);
-            const giftCodeInput = document.getElementById('gift-code');
-            if (giftCodeInput) {
-                giftCodeInput.value = randomCode;
-            }
-            const codeDisplay = document.getElementById('gift-card-main-code');
-            if (codeDisplay) {
-                codeDisplay.textContent = '•••• ' + Math.floor(1000 + Math.random() * 9000);
-            }
-
-            document.querySelectorAll('.curr-label').forEach(l => l.textContent = currentCurrency);
-        }
-
-        function submitWalletPayment() {
-            alert('Pago digital procesado correctamente');
-        }
-
-        function submitTransfer() {
-            alert('Comprobante de transferencia registrado con éxito');
-        }
-
-        function submitOtherPayment() {
-            alert('Pago alternativo registrado con éxito');
-        }
-
-        function updateCreditPlan() {
-            const amount = document.getElementById('credit-amount').value || 75.77;
-            const days = document.getElementById('credit-days').value || 30;
-            document.getElementById('credit-plan-summary').textContent = `Plan propuesto: Financiamiento de ${amount} ${currentCurrency} a un plazo de ${days} días.`;
-        }
-
-        function previewPaymentSettings() {
-            document.getElementById('payment-settings-status').textContent = 'Configuración actualizada';
-        }
-
-        function savePaymentSettings() {
-            alert('Configuración de pagos guardada con éxito');
-            switchView('pos');
-        }
-
-        function resetPaymentSettings() {
-            document.querySelectorAll('#view-payment-settings input[type="checkbox"]').forEach(cb => cb.checked = true);
         }
     </script>
 </body>
