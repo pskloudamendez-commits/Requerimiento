@@ -1755,13 +1755,13 @@
 
         <section class="right-column">
             <div class="payment-methods-top">
-                <div class="method-tab active" onclick="switchPayTab('cash')">⚡ Efectivo</div>
-                <div class="method-tab" onclick="switchPayTab('card')">💳 Tarjeta</div>
-                <div class="method-tab" onclick="switchPayTab('digital')">📱 Billeteras</div>
-                <div class="method-tab" onclick="switchPayTab('transfer')">🏦 Transferencia</div>
-                <div class="method-tab" onclick="switchPayTab('gift')">🎁 Tarjeta regalo</div>
-                <div class="method-tab" onclick="switchPayTab('credit')">👤 Crédito</div>
-                <div class="method-tab" onclick="switchPayTab('other')">➕ Alternativos</div>
+                <div class="method-tab active" onclick="switchPayTab('cash')" data-tab-key="cash">⚡ Efectivo</div>
+                <div class="method-tab" onclick="switchPayTab('card')" data-tab-key="card">💳 Tarjeta</div>
+                <div class="method-tab" onclick="switchPayTab('digital')" data-tab-key="digital">📱 Billeteras</div>
+                <div class="method-tab" onclick="switchPayTab('transfer')" data-tab-key="transfer">🏦 Transferencia</div>
+                <div class="method-tab" onclick="switchPayTab('gift')" data-tab-key="gift">🎁 Tarjeta regalo</div>
+                <div class="method-tab" onclick="switchPayTab('credit')" data-tab-key="credit">👤 Crédito</div>
+                <div class="method-tab" onclick="switchPayTab('other')" data-tab-key="other">➕ Alternativos</div>
             </div>
 
             <div class="importe-banner">
@@ -2215,6 +2215,47 @@
             }
         }
 
+        function changeCurrency() {
+            currentCurrency = document.getElementById('currency-select').value;
+            const rate = exchangeRates[currentCurrency];
+
+            // Actualizar tabla POS
+            document.querySelectorAll('.base-val-unit').forEach(el => {
+                const base = parseFloat(el.getAttribute('data-base'));
+                el.textContent = (base * rate).toFixed(2);
+            });
+            document.querySelectorAll('.base-val-total').forEach(el => {
+                const base = parseFloat(el.getAttribute('data-base'));
+                el.textContent = (base * rate).toFixed(2);
+            });
+
+            const totalConverted = (baseTotal * rate).toFixed(2) + ' ' + currentCurrency;
+            const taxConverted = (0.22 * rate).toFixed(2) + ' ' + currentCurrency;
+
+            // Pantalla POS
+            document.getElementById('screen').textContent = totalConverted;
+            document.getElementById('summary-cash-val').textContent = totalConverted;
+            document.getElementById('summary-total-val').textContent = totalConverted;
+
+            // Resumen de pago
+            document.getElementById('pay-tax-val').textContent = taxConverted;
+            document.getElementById('pay-total-val').textContent = totalConverted;
+            document.querySelectorAll('.curr-label').forEach(el => el.textContent = currentCurrency);
+            document.getElementById('importe-banner-val').textContent = totalConverted;
+
+            const btnCard = document.getElementById('btn-pay-card');
+            if(btnCard) btnCard.textContent = `Pagar ${totalConverted} →`;
+
+            // Gift cards
+            document.querySelectorAll('.gift-conv').forEach(el => {
+                const base = parseFloat(el.getAttribute('data-base'));
+                el.textContent = (base * rate).toFixed(2) + ' ' + currentCurrency;
+            });
+
+            updateOtherAmounts();
+            updateCreditPlan();
+        }
+
         function updateOtherAmounts() {
             const rate = exchangeRates[currentCurrency];
             const currentTotal = baseTotal * rate;
@@ -2234,6 +2275,65 @@
             summary.textContent = `Plan propuesto: Financiamiento de ${parseFloat(amtInput).toFixed(2)} ${currentCurrency} a pagar en ${daysInput} días. Cuota única al vencimiento.`;
         }
 
+        function applyPaymentSettings() {
+            // Ocultar/mostrar tarjetas individuales
+            const cardMapping = {
+                'card-visa': '[data-card-key="card-visa"]',
+                'card-mc': '[data-card-key="card-mc"]',
+                'card-amex': '[data-card-key="card-amex"]',
+                'card-maestro': '[data-card-key="card-maestro"]',
+                'card-discover': '[data-card-key="card-discover"]',
+                'card-diners': '[data-card-key="card-diners"]'
+            };
+            for (const [key, selector] of Object.entries(cardMapping)) {
+                const checkbox = document.querySelector(`[data-subpayment-key="${key}"]`);
+                const cardEl = document.querySelector(selector);
+                if (checkbox && cardEl) {
+                    cardEl.style.display = checkbox.checked ? 'flex' : 'none';
+                }
+            }
+
+            // Ocultar/mostrar billeteras digitales
+            const digitalMapping = {
+                'paypal': '[data-submethod-id="paypal"]',
+                'binance': '[data-submethod-id="binance"]',
+                'applepay': '[data-submethod-id="applepay"]',
+                'googlepay': '[data-submethod-id="googlepay"]'
+            };
+            for (const [key, selector] of Object.entries(digitalMapping)) {
+                const checkbox = document.querySelector(`[data-subpayment-key="${key}"]`);
+                const btnEl = document.querySelector(selector);
+                if (checkbox && btnEl) {
+                    btnEl.style.display = checkbox.checked ? 'flex' : 'none';
+                }
+            }
+
+            // Ocultar/mostrar métodos alternativos
+            const otherMapping = {
+                'cashea': '[data-submethod-id="cashea"]',
+                'pago-movil': '[data-submethod-id="pago-movil"]',
+                'zelle': '[data-submethod-id="zelle"]',
+                'manual': '[data-submethod-id="manual"]'
+            };
+            for (const [key, selector] of Object.entries(otherMapping)) {
+                const checkbox = document.querySelector(`[data-subpayment-key="${key}"]`);
+                const btnEl = document.querySelector(selector);
+                if (checkbox && btnEl) {
+                    btnEl.style.display = checkbox.checked ? 'flex' : 'none';
+                }
+            }
+
+            // Ocultar/mostrar pestañas principales
+            const mainMethods = ['cash', 'card', 'digital', 'transfer', 'gift', 'credit', 'other'];
+            mainMethods.forEach(method => {
+                const mainCheckbox = document.querySelector(`[data-payment-key="${method}"]`);
+                const tabEl = document.querySelector(`[data-tab-key="${method}"]`);
+                if (tabEl) {
+                    tabEl.style.display = mainCheckbox && mainCheckbox.checked ? 'block' : 'none';
+                }
+            });
+        }
+
         function submitWalletPayment() {
             alert('Pago digital procesado con éxito en ' + currentCurrency);
         }
@@ -2246,65 +2346,19 @@
             alert('Pago alternativo registrado con éxito en ' + currentCurrency);
         }
 
-        function previewPaymentSettings() {}
+        function previewPaymentSettings() {
+            applyPaymentSettings();
+        }
 
         function savePaymentSettings() {
-            alert('Configuración de pagos guardada correctamente.');
+            applyPaymentSettings();
+            alert('Configuración de pagos guardada y aplicada correctamente.');
         }
 
         function resetPaymentSettings() {
             document.querySelectorAll('.payment-config-card input[type="checkbox"]').forEach(cb => cb.checked = true);
-            alert('Configuración restablecida a valores por defecto.');
-        }
-
-        function changeCurrency() {
-            currentCurrency = document.getElementById('currency-select').value;
-            const rate = exchangeRates[currentCurrency];
-            const convertedTotal = baseTotal * rate;
-            const taxVal = convertedTotal * 0.003;
-
-            // Actualizar pantalla POS
-            document.getElementById('screen').textContent = convertedTotal.toFixed(2) + ' ' + currentCurrency;
-            document.getElementById('summary-cash-val').textContent = convertedTotal.toFixed(2) + ' ' + currentCurrency;
-            document.getElementById('summary-total-val').textContent = convertedTotal.toFixed(2) + ' ' + currentCurrency;
-
-            // Actualizar tabla POS (Unidades y Totales)
-            document.querySelectorAll('#pos-table-body .base-val-unit').forEach(el => {
-                const baseVal = parseFloat(el.getAttribute('data-base'));
-                el.textContent = (baseVal * rate).toFixed(2);
-            });
-            document.querySelectorAll('#pos-table-body .base-val-total').forEach(el => {
-                const baseVal = parseFloat(el.getAttribute('data-base'));
-                el.textContent = (baseVal * rate).toFixed(2);
-            });
-
-            // Actualizar pasarela de pagos
-            document.getElementById('pay-tax-val').textContent = taxVal.toFixed(2) + ' ' + currentCurrency;
-            document.getElementById('pay-total-val').textContent = convertedTotal.toFixed(2) + ' ' + currentCurrency;
-            document.querySelectorAll('.curr-label').forEach(el => el.textContent = currentCurrency);
-            document.getElementById('importe-banner-val').textContent = convertedTotal.toFixed(2) + ' ' + currentCurrency;
-            document.getElementById('btn-pay-card').textContent = `Pagar ${convertedTotal.toFixed(2)} ${currentCurrency} →`;
-
-            // Efectivo
-            document.getElementById('cash-instruction-text').textContent = `Paga la cantidad exacta de ${convertedTotal.toFixed(2)} ${currentCurrency} en efectivo.`;
-
-            // Tarjetas de regalo
-            document.querySelectorAll('.gift-conv').forEach(el => {
-                const base = parseFloat(el.getAttribute('data-base'));
-                el.textContent = (base * rate).toFixed(2) + ' ' + currentCurrency;
-            });
-
-            // Transferencia
-            document.getElementById('transfer-label-alt').textContent = `En ${currentCurrency}`;
-            document.getElementById('transfer-amount').value = convertedTotal.toFixed(2);
-
-            // Crédito
-            document.getElementById('credit-label-alt').textContent = `En ${currentCurrency}`;
-            document.getElementById('credit-amount').value = convertedTotal.toFixed(2);
-            updateCreditPlan();
-
-            // Otros pagos / Cashea
-            updateOtherAmounts();
+            applyPaymentSettings();
+            alert('Configuración restablecida.');
         }
     </script>
 </body>
