@@ -911,7 +911,7 @@
             color: var(--accent);
             font-style: italic;
         }
-        .form-group input[type="text"], .form-group input[type="password"] {
+        .form-group input[type="text"], .form-group input[type="password"], .form-group select {
             background: var(--vault-panel);
             border: 1px solid var(--vault-line);
             border-radius: var(--radius-tight);
@@ -925,7 +925,7 @@
             color: var(--text-vault-mute);
             opacity: 0.6;
         }
-        .form-group input:focus {
+        .form-group input:focus, .form-group select:focus {
             border-color: var(--accent);
             box-shadow: 0 0 0 3px var(--accent-soft);
         }
@@ -1594,6 +1594,20 @@
                         <label class="switch-control"><input type="checkbox" data-payment-key="transfer" checked onchange="previewPaymentSettings()"><span class="switch-track"></span></label>
                     </div>
                     <div class="config-credentials-grid">
+                        <div class="form-group">
+                            <label>Banco Receptor</label>
+                            <select data-field="transfer-bank-name">
+                                <option value="" disabled selected>Seleccione un banco</option>
+                                <option value="banco_general">Banco General</option>
+                                <option value="bbva">BBVA</option>
+                                <option value="banesco">Banesco</option>
+                                <option value="mercantil">Banco Mercantil</option>
+                                <option value="bancolombia">Bancolombia</option>
+                                <option value="global_bank">Global Bank</option>
+                                <option value="banco_union">Banco Unión</option>
+                                <option value="banco_itau">Banco Itaú</option>
+                            </select>
+                        </div>
                         <div class="form-group"><label>ID / Código de Banco</label><input type="text" data-field="transfer-wallet-id" placeholder="Código swift / aba"></div>
                         <div class="form-group"><label>Cuenta de recepción</label><input type="text" data-field="transfer-account" placeholder="N.º de cuenta bancaria"></div>
                         <div class="form-group"><label>Usuario de banca en línea</label><input type="text" data-field="transfer-user" placeholder="Usuario empresarial"></div>
@@ -1944,7 +1958,20 @@
                     <div class="form-row">
                         <div class="form-group">
                             <label for="transfer-bank">Banco de origen <span class="label-alt">Emisor</span></label>
-                            <input type="text" id="transfer-bank" placeholder="Ej. Banco Unión">
+                            <select id="transfer-bank">
+                                <option value="" disabled selected>Seleccione banco emisor</option>
+                                <option value="Banco Nacional">Banco Nacional</option>
+                                <option value="BBVA">BBVA</option>
+                                <option value="Banesco">Banesco</option>
+                                <option value="Banco Mercantil">Banco Mercantil</option>
+                                <option value="Bancolombia">Bancolombia</option>
+                                <option value="Banco General">Banco General</option>
+                                <option value="Global Bank">Global Bank</option>
+                                <option value="Banco Unión">Banco Unión</option>
+                                <option value="Banco Itaú">Banco Itaú</option>
+                                <option value="Banco Andino">Banco Andino</option>
+                                <option value="Banco Continental">Banco Continental</option>
+                            </select>
                         </div>
                         <div class="form-group">
                             <label for="transfer-holder">Titular de la cuenta <span class="label-alt">Propietario</span></label>
@@ -2283,7 +2310,6 @@
 
         function resetPaymentSettings() {
             document.querySelectorAll('#view-payment-settings input[type="checkbox"]').forEach(cb => cb.checked = true);
-            alert('Configuración restablecida a valores por defecto');
         }
     </script>
 </body>
