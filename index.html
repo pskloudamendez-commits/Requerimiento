@@ -1338,10 +1338,10 @@
                             </tr>
                         </thead>
                         <tbody id="pos-table-body">
-                            <tr><td>100</td><td>Bolsas de papel kraft (café)</td><td>Unidad</td><td class="base-val" data-base="0.50">0.50</td><td>0.00</td><td class="base-val" data-base="50.00">50.00</td></tr>
-                            <tr><td>50</td><td>Aceite de oliva virgen extra 1L</td><td>Unidad</td><td class="base-val" data-base="9.00">9.00</td><td>0.00</td><td class="base-val" data-base="450.00">450.00</td></tr>
-                            <tr><td>2.50</td><td>Café molido premium 1kg</td><td>Kg</td><td class="base-val" data-base="12.00">12.00</td><td>0.00</td><td class="base-val" data-base="30.00">30.00</td></tr>
-                            <tr><td>0.350</td><td>Queso manchego curado <span class="tag-peso">☑ Peso dinámico</span></td><td>Kg</td><td class="base-val" data-base="35.00">35.00</td><td>0.00</td><td class="base-val" data-base="12.25">12.25</td></tr>
+                            <tr><td>100</td><td>Bolsas de papel kraft (café)</td><td>Unidad</td><td><span class="base-val-unit" data-base="0.50">0.50</span></td><td>0.00</td><td><span class="base-val-total" data-base="50.00">50.00</span></td></tr>
+                            <tr><td>50</td><td>Aceite de oliva virgen extra 1L</td><td>Unidad</td><td><span class="base-val-unit" data-base="9.00">9.00</span></td><td>0.00</td><td><span class="base-val-total" data-base="450.00">450.00</span></td></tr>
+                            <tr><td>2.50</td><td>Café molido premium 1kg</td><td>Kg</td><td><span class="base-val-unit" data-base="12.00">12.00</span></td><td>0.00</td><td><span class="base-val-total" data-base="30.00">30.00</span></td></tr>
+                            <tr><td>0.350</td><td>Queso manchego curado <span class="tag-peso">☑ Peso dinámico</span></td><td>Kg</td><td><span class="base-val-unit" data-base="35.00">35.00</span></td><td>0.00</td><td><span class="base-val-total" data-base="12.25">12.25</span></td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -1407,7 +1407,7 @@
                     </div>
                 </div>
 
-                <!-- TARJETA (CONFIGURACIÓN INDIVIDUALIZADA POR TARJETA) -->
+                <!-- TARJETA -->
                 <div class="payment-config-card" data-config-card="card">
                     <div class="payment-config-top">
                         <div class="payment-config-title">
@@ -1417,7 +1417,6 @@
                         <label class="switch-control"><input type="checkbox" data-payment-key="card" checked onchange="previewPaymentSettings()"><span class="switch-track"></span></label>
                     </div>
                     <div class="config-submethods">
-                        <!-- Visa - Banco General -->
                         <div class="config-submethod-item">
                             <div class="config-submethod-header">
                                 <span>💳 Visa (Banco General)</span>
@@ -1433,7 +1432,6 @@
                                 <div class="form-group"><label>Secret Key</label><input type="password" data-field="sub-card-visa-pass" placeholder="••••••••"></div>
                             </div>
                         </div>
-                        <!-- Mastercard - Global Bank -->
                         <div class="config-submethod-item">
                             <div class="config-submethod-header">
                                 <span>💳 Mastercard (Global Bank)</span>
@@ -1449,7 +1447,6 @@
                                 <div class="form-group"><label>Secret Key</label><input type="password" data-field="sub-card-mc-pass" placeholder="••••••••"></div>
                             </div>
                         </div>
-                        <!-- Amex - Banco Unión -->
                         <div class="config-submethod-item">
                             <div class="config-submethod-header">
                                 <span>💳 Amex (Banco Unión)</span>
@@ -1465,7 +1462,6 @@
                                 <div class="form-group"><label>Secret Key</label><input type="password" data-field="sub-card-amex-pass" placeholder="••••••••"></div>
                             </div>
                         </div>
-                        <!-- Maestro - Banco Itaú -->
                         <div class="config-submethod-item">
                             <div class="config-submethod-header">
                                 <span>💳 Maestro / Débito (Banco Itaú)</span>
@@ -1481,7 +1477,6 @@
                                 <div class="form-group"><label>Secret Key</label><input type="password" data-field="sub-card-maestro-pass" placeholder="••••••••"></div>
                             </div>
                         </div>
-                        <!-- Discover - Banco Andino -->
                         <div class="config-submethod-item">
                             <div class="config-submethod-header">
                                 <span>💳 Discover (Banco Andino)</span>
@@ -1497,7 +1492,6 @@
                                 <div class="form-group"><label>Secret Key</label><input type="password" data-field="sub-card-discover-pass" placeholder="••••••••"></div>
                             </div>
                         </div>
-                        <!-- Diners - Banco Continental -->
                         <div class="config-submethod-item">
                             <div class="config-submethod-header">
                                 <span>💳 Diners Club (Banco Continental)</span>
@@ -1526,7 +1520,6 @@
                         <label class="switch-control"><input type="checkbox" data-payment-key="digital" checked onchange="previewPaymentSettings()"><span class="switch-track"></span></label>
                     </div>
                     <div class="config-submethods">
-                        <!-- PayPal -->
                         <div class="config-submethod-item">
                             <div class="config-submethod-header">
                                 <span>PayPal</span>
@@ -1541,7 +1534,6 @@
                                 <div class="form-group"><label>Clave / Secret</label><input type="password" data-field="sub-paypal-pass" placeholder="••••••••"></div>
                             </div>
                         </div>
-                        <!-- Binance Pay -->
                         <div class="config-submethod-item">
                             <div class="config-submethod-header">
                                 <span>Binance Pay</span>
@@ -1556,7 +1548,6 @@
                                 <div class="form-group"><label>Clave API</label><input type="password" data-field="sub-binance-pass" placeholder="••••••••"></div>
                             </div>
                         </div>
-                        <!-- Apple Pay -->
                         <div class="config-submethod-item">
                             <div class="config-submethod-header">
                                 <span>Apple Pay</span>
@@ -1571,7 +1562,6 @@
                                 <div class="form-group"><label>Clave de Certificado</label><input type="password" data-field="sub-apple-pass" placeholder="••••••••"></div>
                             </div>
                         </div>
-                        <!-- Google Pay -->
                         <div class="config-submethod-item">
                             <div class="config-submethod-header">
                                 <span>G Pay</span>
@@ -1664,7 +1654,6 @@
                         <label class="switch-control"><input type="checkbox" data-payment-key="other" checked onchange="previewPaymentSettings()"><span class="switch-track"></span></label>
                     </div>
                     <div class="config-submethods">
-                        <!-- Cashea -->
                         <div class="config-submethod-item">
                             <div class="config-submethod-header">
                                 <span>🛍️ Cashea</span>
@@ -1679,7 +1668,6 @@
                                 <div class="form-group"><label>Clave API</label><input type="password" data-field="sub-cashea-pass" placeholder="••••••••"></div>
                             </div>
                         </div>
-                        <!-- Pago móvil -->
                         <div class="config-submethod-item">
                             <div class="config-submethod-header">
                                 <span>📲 Pago móvil</span>
@@ -1694,7 +1682,6 @@
                                 <div class="form-group"><label>Clave de operaciones</label><input type="password" data-field="sub-pagomovil-pass" placeholder="••••••••"></div>
                             </div>
                         </div>
-                        <!-- Zelle -->
                         <div class="config-submethod-item">
                             <div class="config-submethod-header">
                                 <span>💬 Zelle</span>
@@ -1709,7 +1696,6 @@
                                 <div class="form-group"><label>Clave de banca Zelle</label><input type="password" data-field="sub-zelle-pass" placeholder="••••••••"></div>
                             </div>
                         </div>
-                        <!-- Pago manual -->
                         <div class="config-submethod-item">
                             <div class="config-submethod-header">
                                 <span>🧾 Pago manual</span>
@@ -2194,68 +2180,131 @@
             }
         }
 
-        function selectCard(el) {
+        function selectCard(cardElement) {
             document.querySelectorAll('.credit-card-item').forEach(c => c.classList.remove('selected'));
-            el.classList.add('selected');
+            cardElement.classList.add('selected');
         }
 
-        function selectGiftCard(el) {
+        function selectDigitalWallet(btn) {
+            document.querySelectorAll('#pay-digital .digital-option-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('#pay-digital .check').forEach(c => c.textContent = 'Conectar');
+            btn.classList.add('active');
+            btn.querySelector('.check').textContent = '✓ conectado';
+            const walletName = btn.querySelector('strong').textContent;
+            document.getElementById('wallet-account-title').textContent = 'Datos de cuenta — ' + walletName;
+            document.getElementById('wallet-account-label').textContent = 'ID de cuenta / correo (' + walletName + ')';
+        }
+
+        function selectGiftCard(card) {
             document.querySelectorAll('.gift-card-item').forEach(g => {
                 g.classList.remove('selected');
                 g.querySelector('.check').textContent = '';
             });
-            el.classList.add('selected');
-            el.querySelector('.check').textContent = '✓';
+            card.classList.add('selected');
+            card.querySelector('.check').textContent = '✓';
         }
 
-        function selectDigitalWallet(el) {
-            document.querySelectorAll('#pay-digital .digital-option-btn').forEach(b => {
-                b.classList.remove('active');
-                b.querySelector('.check').textContent = 'Conectar';
-            });
-            el.classList.add('active');
-            el.querySelector('.check').textContent = '✓ conectado';
-            const subId = el.getAttribute('data-submethod-id');
-            const titleEl = document.getElementById('wallet-account-title');
-            const labelEl = document.getElementById('wallet-account-label');
-            titleEl.textContent = 'Datos de cuenta — ' + el.querySelector('strong').textContent;
-            labelEl.textContent = 'ID de cuenta / ' + subId;
-        }
-
-        function selectOtherPayment(el, name) {
-            document.querySelectorAll('#pay-other .digital-option-btn').forEach(b => {
-                b.classList.remove('active');
-                b.querySelector('.check').textContent = 'Seleccionar';
-            });
-            el.classList.add('active');
-            el.querySelector('.check').textContent = '✓ seleccionado';
+        function selectOtherPayment(btn, name) {
+            document.querySelectorAll('#pay-other .digital-option-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('#pay-other .check').forEach(c => c.textContent = 'Seleccionar');
+            btn.classList.add('active');
+            btn.querySelector('.check').textContent = '✓ seleccionado';
             document.getElementById('other-box-title').textContent = 'Datos de ' + name;
+            if(name === 'Cashea') {
+                updateOtherAmounts();
+            }
+        }
+
+        function updateOtherAmounts() {
+            const rate = exchangeRates[currentCurrency];
+            const currentTotal = baseTotal * rate;
+            const inicial = currentTotal * 0.25;
+            const financiado = currentTotal * 0.75;
+            const cuota = financiado / 3;
+            document.getElementById('other-monto').textContent = currentTotal.toFixed(2) + ' ' + currentCurrency;
+            document.getElementById('other-inicial').textContent = inicial.toFixed(2) + ' ' + currentCurrency;
+            document.getElementById('other-financiado').textContent = financiado.toFixed(2) + ' ' + currentCurrency;
+            document.getElementById('other-cuota').textContent = cuota.toFixed(2) + ' ' + currentCurrency;
+        }
+
+        function updateCreditPlan() {
+            const amtInput = document.getElementById('credit-amount').value || (baseTotal * exchangeRates[currentCurrency]);
+            const daysInput = document.getElementById('credit-days').value || 30;
+            const summary = document.getElementById('credit-plan-summary');
+            summary.textContent = `Plan propuesto: Financiamiento de ${parseFloat(amtInput).toFixed(2)} ${currentCurrency} a pagar en ${daysInput} días. Cuota única al vencimiento.`;
+        }
+
+        function submitWalletPayment() {
+            alert('Pago digital procesado con éxito en ' + currentCurrency);
+        }
+
+        function submitTransfer() {
+            alert('Transferencia registrada con éxito en ' + currentCurrency);
+        }
+
+        function submitOtherPayment() {
+            alert('Pago alternativo registrado con éxito en ' + currentCurrency);
+        }
+
+        function previewPaymentSettings() {}
+
+        function savePaymentSettings() {
+            alert('Configuración de pagos guardada correctamente.');
+        }
+
+        function resetPaymentSettings() {
+            document.querySelectorAll('.payment-config-card input[type="checkbox"]').forEach(cb => cb.checked = true);
+            alert('Configuración restablecida a valores por defecto.');
         }
 
         function changeCurrency() {
-            const select = document.getElementById('currency-select');
-            currentCurrency = select.value;
+            currentCurrency = document.getElementById('currency-select').value;
             const rate = exchangeRates[currentCurrency];
-            const convertedTotal = (baseTotal * rate).toFixed(2);
-            const convertedTax = (0.22 * rate).toFixed(2);
+            const convertedTotal = baseTotal * rate;
+            const taxVal = convertedTotal * 0.003;
 
-            document.getElementById('screen').textContent = convertedTotal + ' ' + currentCurrency;
-            document.getElementById('summary-cash-val').textContent = convertedTotal + ' ' + currentCurrency;
-            document.getElementById('summary-total-val').textContent = convertedTotal + ' ' + currentCurrency;
+            // Actualizar pantalla POS
+            document.getElementById('screen').textContent = convertedTotal.toFixed(2) + ' ' + currentCurrency;
+            document.getElementById('summary-cash-val').textContent = convertedTotal.toFixed(2) + ' ' + currentCurrency;
+            document.getElementById('summary-total-val').textContent = convertedTotal.toFixed(2) + ' ' + currentCurrency;
 
-            document.getElementById('pay-total-val').textContent = convertedTotal + ' ' + currentCurrency;
-            document.getElementById('pay-tax-val').textContent = convertedTax + ' ' + currentCurrency;
-            document.getElementById('importe-banner-val').textContent = convertedTotal + ' ' + currentCurrency;
-            
-            document.getElementById('btn-pay-card').textContent = 'Pagar ' + convertedTotal + ' ' + currentCurrency + ' →';
-            document.getElementById('btn-pay-digital').textContent = 'Pagar ' + convertedTotal + ' ' + currentCurrency + ' →';
-            document.getElementById('cash-instruction-text').textContent = 'Paga la cantidad exacta de ' + convertedTotal + ' ' + currentCurrency + ' en efectivo.';
+            // Actualizar tabla POS (Unidades y Totales)
+            document.querySelectorAll('#pos-table-body .base-val-unit').forEach(el => {
+                const baseVal = parseFloat(el.getAttribute('data-base'));
+                el.textContent = (baseVal * rate).toFixed(2);
+            });
+            document.querySelectorAll('#pos-table-body .base-val-total').forEach(el => {
+                const baseVal = parseFloat(el.getAttribute('data-base'));
+                el.textContent = (baseVal * rate).toFixed(2);
+            });
 
-            document.getElementById('other-monto').textContent = convertedTotal + ' ' + currentCurrency;
-            const cuota = (convertedTotal / 3).toFixed(2);
-            document.getElementById('other-inicial').textContent = cuota + ' ' + currentCurrency;
-            document.getElementById('other-financiado').textContent = (convertedTotal - cuota).toFixed(2) + ' ' + currentCurrency;
-            document.getElementById('other-cuota').textContent = cuota + ' ' + currentCurrency;
+            // Actualizar pasarela de pagos
+            document.getElementById('pay-tax-val').textContent = taxVal.toFixed(2) + ' ' + currentCurrency;
+            document.getElementById('pay-total-val').textContent = convertedTotal.toFixed(2) + ' ' + currentCurrency;
+            document.querySelectorAll('.curr-label').forEach(el => el.textContent = currentCurrency);
+            document.getElementById('importe-banner-val').textContent = convertedTotal.toFixed(2) + ' ' + currentCurrency;
+            document.getElementById('btn-pay-card').textContent = `Pagar ${convertedTotal.toFixed(2)} ${currentCurrency} →`;
+
+            // Efectivo
+            document.getElementById('cash-instruction-text').textContent = `Paga la cantidad exacta de ${convertedTotal.toFixed(2)} ${currentCurrency} en efectivo.`;
+
+            // Tarjetas de regalo
+            document.querySelectorAll('.gift-conv').forEach(el => {
+                const base = parseFloat(el.getAttribute('data-base'));
+                el.textContent = (base * rate).toFixed(2) + ' ' + currentCurrency;
+            });
+
+            // Transferencia
+            document.getElementById('transfer-label-alt').textContent = `En ${currentCurrency}`;
+            document.getElementById('transfer-amount').value = convertedTotal.toFixed(2);
+
+            // Crédito
+            document.getElementById('credit-label-alt').textContent = `En ${currentCurrency}`;
+            document.getElementById('credit-amount').value = convertedTotal.toFixed(2);
+            updateCreditPlan();
+
+            // Otros pagos / Cashea
+            updateOtherAmounts();
         }
     </script>
 </body>
